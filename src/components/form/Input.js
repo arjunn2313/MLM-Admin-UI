@@ -1,14 +1,27 @@
 import React from "react";
 
-export default function Input({ label, placeholder }) {
+export default function Input({
+  label,
+  placeholder,
+  value,
+  onChange,
+  onBlur,
+  error,
+}) {
   return (
-    <div>
+    <div className="mb-4  w-full  ">
       <label className="block mb-3 font-medium">{label}</label>
       <input
         type="text"
-        className="w-full border border-gray-600   outline-none  p-2 rounded-md"
+        className={`w-full border ${
+          error ? "border-red-600" : "border-gray-600"
+        } outline-none p-2 rounded-md`}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
       />
+      {error && <span className="text-red-600">{error.message}</span>}
     </div>
   );
 }

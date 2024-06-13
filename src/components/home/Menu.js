@@ -52,24 +52,15 @@ export default function Menu() {
               <span>Tree</span>
               <span>{isTreeOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}</span>
             </div>
-            {/* {isTreeOpen && (
-              <div className="pl-4">
-                <ul className="space-y-1">
-                  <li className="relative flex items-center space-x-2">
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-full border-l-2 border-gray-300"></div>
-                    <span>Tree View</span>
-                  </li>
-                  <li className="relative flex items-center space-x-2">
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-full border-l-2 border-gray-300"></div>
-                    <span>Sponsors</span>
-                  </li>
-                  <li className="relative flex items-center space-x-2">
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-full border-l-2 border-gray-300"></div>
-                    <span>Downline Members</span>
+            {isTreeOpen && (
+              <div className="">
+                <ul className="text-center text-sm font-normal mt-2">
+                  <li>
+                    <NavLink to="/tree">Tree View</NavLink>
                   </li>
                 </ul>
               </div>
-            )} */}
+            )}
           </li>
 
           <li>

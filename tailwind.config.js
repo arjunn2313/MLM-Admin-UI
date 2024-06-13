@@ -8,7 +8,7 @@ module.exports = {
       },
       colors: {
         
-        bgorg:"#FFE4D0",
+        textorg:"#rgba(170, 91, 23, 1)",
         bggray:"#F9F9F9",
       },
       boxShadow: {

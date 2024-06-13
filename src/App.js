@@ -6,6 +6,7 @@ import Tree from "./Pages/Tree/Tree";
 import Navbar from "./components/home/NavBar";
 import Menu from "./components/home/Menu";
 import Member from "./Pages/Members/Member";
+import Preview from "./Pages/Register/Preview";
 
 function App() {
   const Layout = () => {
@@ -44,6 +45,10 @@ function App() {
         {
           path: "/members",
           element: <Member />,
+        },
+        {
+          path: "/preview",
+          element: <Preview />,
         },
       ],
     },
