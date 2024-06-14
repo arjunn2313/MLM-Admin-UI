@@ -53,10 +53,16 @@ export default function Menu() {
               <span>{isTreeOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}</span>
             </div>
             {isTreeOpen && (
-              <div className="">
-                <ul className="text-center text-sm font-normal mt-2">
+              <div className="relative">
+                <ul className="space-y-3   font-medium mt-2 ps-10 menu-stepper">
                   <li>
                     <NavLink to="/tree">Tree View</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/sponsors">Sponsors</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/downline-member">Downline Members</NavLink>
                   </li>
                 </ul>
               </div>

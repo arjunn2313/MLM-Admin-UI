@@ -7,17 +7,20 @@ import Navbar from "./components/home/NavBar";
 import Menu from "./components/home/Menu";
 import Member from "./Pages/Members/Member";
 import Preview from "./Pages/Register/Preview";
+import RegisterTable from "./Pages/Register/RegisterTable";
+import Sponsors from "./Pages/Tree/Sponsors";
+import Downlinemember from "./Pages/Tree/Downline-member";
 
 function App() {
   const Layout = () => {
     return (
       <div>
         <Navbar />
-        <div className="main-container  h-full bg-blue-50">
+        <div className="main-container h-full bg-blue-50">
           <div className="menu w-[15%] bg-white sm:block mt-1">
             <Menu />
           </div>
-          <div className="content-container w-full ">
+          <div className="content-container w-full">
             <Outlet />
           </div>
         </div>
@@ -36,11 +39,29 @@ function App() {
         },
         {
           path: "/register",
+          element: <RegisterTable />,
+          children: [
+            {
+              path: "register/form",  
+              element: <Register />,
+            },
+          ],
+        },
+        {
+          path: "/form",
           element: <Register />,
         },
         {
           path: "/tree",
           element: <Tree />,
+        },
+        {
+          path: "/sponsors",
+          element: <Sponsors />,
+        },
+        {
+          path: "/downline-member",
+          element: <Downlinemember />,
         },
         {
           path: "/members",
@@ -53,6 +74,7 @@ function App() {
       ],
     },
   ]);
+
   return <RouterProvider router={router} />;
 }
 

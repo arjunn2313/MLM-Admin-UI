@@ -45,3 +45,33 @@ input[type="radio"]:checked + .custom-radio.paid-radio::after {
 input[type="radio"]:checked + .custom-radio.unpaid-radio::after {
   background-color: #ef4444; /* Tailwind's red-500 */
 }
+
+
+.menu-stepper::after{
+  content: '';
+  position: absolute;
+  width: 1px;
+  height:80%;
+  left:12.5%;
+  top: 13%;
+  z-index: 0;
+  background:rgba(200, 200, 200, 1);
+
+}
+.menu-stepper li a::before{
+content: "";
+position: absolute;
+background:rgba(200, 200, 200, 1);
+width: 10px;
+height: 10px;
+margin-top: 15px;
+border-radius: 50%;
+left: 10%;
+transform: translateY(-50%);
+z-index: 10;
+ 
+}
+ 
+.menu-stepper li a.active::before{
+  background-color: rgba(33, 150, 243, 1);
+}
