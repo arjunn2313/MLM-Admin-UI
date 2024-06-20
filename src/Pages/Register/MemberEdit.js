@@ -1,20 +1,21 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Input from "../../components/form/Input";
 import Date from "../../components/form/DatePicker";
 import SelectBox from "../../components/form/SelectBox";
 import SelectGroup from "../../components/form/SelectGroup";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import Preview from "./Preview";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BaseUrl } from "../../request/URL";
 import { MdVerified } from "react-icons/md";
+import moment from "moment";
 
 const GenderData = ["Male", "Female", "Other"];
 const MaterialStatus = ["Single", "Married", "Other"];
-const JoiningFee = [2500,3000,3500];
+const JoiningFee = [2500, 3000, 3500];
 
-export default function Register() {
+export default function UpdateMember() {
+  const { memberId } = useParams(); // Assuming you're using React Router for routing
   const {
     control,
     handleSubmit,
@@ -22,7 +23,7 @@ export default function Register() {
     setValue,
   } = useForm();
 
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
 
   const alpicantRef = useRef(null);
   const apliacntSigRef = useRef(null);
@@ -36,10 +37,9 @@ export default function Register() {
     } else if (type === "sponsorSign") {
       sponserRef.current.click();
     }
-    // fileInputRef.current.click();
   };
+
   const [showPreview, setShowPreview] = useState(false);
-  const [formData, setFormData] = useState(null);
   const [applicantPhoto, setApplicantPhoto] = useState(null);
   const [applicantSign, setApplicantSign] = useState(null);
   const [sponsorSign, setSponsorSign] = useState(null);
@@ -56,7 +56,6 @@ export default function Register() {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
     const formData = new FormData();
     formData.append("name", data?.name);
     formData.append("parentName", data?.parentInfo?.name);
@@ -81,26 +80,30 @@ export default function Register() {
     formData.append("sponsorName", sponsorDetails?.name);
     formData.append(
       "sponsorPlacementLevel",
-      sponsorDetails?.applicantPlacementLevel
+      sponsorDetails?.sponsorPlacementLevel
     );
     formData.append(
       "applicantPlacementLevel",
-      (sponsorDetails?.applicantPlacementLevel + 1)
+      sponsorDetails?.sponsorPlacementLevel + 1
     );
     formData.append("joiningFee", data?.joiningFee);
-    formData.append("applicantPhoto", applicantPhoto);
-    formData.append("applicantSign", applicantSign);
-    formData.append("sponsorSign", sponsorSign);
+    if (applicantPhoto) formData.append("applicantPhoto", applicantPhoto);
+    if (applicantSign) formData.append("applicantSign", applicantSign);
+    if (sponsorSign) formData.append("sponsorSign", sponsorSign);
 
     try {
-      const res = await axios.post(`${BaseUrl}/member/register`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      const res = await axios.put(
+        `${BaseUrl}/member/update/${memberId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
+      );
       console.log(res);
-      alert("Registration completed")
-      naviagte(-1)
+      alert("Update completed");
+      navigate(-1);
     } catch (error) {
       console.log(error);
     }
@@ -126,7 +129,7 @@ export default function Register() {
         setSponsorDetails(response.data);
         setValue(
           "applicantPlacementLevel",
-          response.data.applicantPlacementLevel + 1
+          response.data.sponsorPlacementLevel + 1
         );
         setSponsorError(null);
         console.log(response);
@@ -141,10 +144,61 @@ export default function Register() {
     }
   };
 
+  // Fetch existing member data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${BaseUrl}/member/member-preview/${memberId}`
+        );
+        const data = response.data;
+
+        // Populate form fields with the fetched data
+        setValue("name", data.name);
+        setValue("parentInfo", {
+          name: data.parentName,
+          relation: data.relation,
+        });
+        setValue("phoneNumber", data.phoneNumber);
+        setValue(
+          "dob",
+          moment(new Date(data?.dateOfBirth)).format("DD-MM-YYYY")
+        );
+        setValue("gender", data.gender);
+        setValue("maritalStatus", data.maritalStatus);
+        setValue("panNumber", data.panNumber);
+        setValue("accountNumber", data.accountNumber);
+        setValue("ifscCode", data.ifscCode);
+        setValue("bankName", data.bankName);
+        setValue("address", data.address);
+        setValue("city", data.city);
+        setValue("district", data.district);
+        setValue("state", data.state);
+        setValue("country", data.country);
+        setValue("zipCode", data.zipCode);
+        setValue("nomineeName", data.nameOfNominee);
+        setValue("relationshipWithNominee", data.relationshipWithNominee);
+        setValue("sponsorId", data.sponsorId);
+        setValue("joiningFee", data.joiningFee);
+        setSponsorDetails({
+          name: data.sponsorName,
+          sponsorPlacementLevel: data.sponsorPlacementLevel,
+        });
+        setApplicantPhoto(data.applicantPhoto);
+        setApplicantSign(data.applicantSign);
+        setSponsorSign(data.sponsorSign);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [memberId, setValue]);
+
   return (
     <>
       <div className="m-3 p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 ">Registration Form</h2>
+        <h2 className="text-2xl font-bold mb-6">Update Member</h2>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -168,20 +222,32 @@ export default function Register() {
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name="parentInfo"
             control={control}
             rules={{ required: "Parent information is required" }}
             render={({ field }) => (
-              <SelectGroup
-                options={["S/O", "D/O"]}
-                label="Parent Information"
-                placeholder="Enter parent name"
-                error={errors.parentInfo}
-                {...field}
-              />
+              <div className="mb-4 w-full">
+                <label className="block mb-3 font-medium">{label}</label>
+                <select
+                  className={`w-full border ${
+                    error ? "border-red-600" : "border-gray-600"
+                  } outline-none p-2 rounded-md`}
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                >
+                  <option>Select</option>
+                  {options?.map((itm) => (
+                    <option key={itm} value={itm} className="capitalize">
+                      {itm}
+                    </option>
+                  ))}
+                </select>
+                {error && <span className="text-red-600">{error.message}</span>}
+              </div>
             )}
-          />
+          /> */}
           <Controller
             name="phoneNumber"
             control={control}
@@ -201,8 +267,8 @@ export default function Register() {
             rules={{ required: "Date of birth is required" }}
             render={({ field }) => (
               <Date
-                label="Date Of Birth"
-                type="date"
+                label="Date of Birth"
+                placeholder="Select date"
                 error={errors.dob}
                 {...field}
               />
@@ -216,6 +282,7 @@ export default function Register() {
               <SelectBox
                 options={GenderData}
                 label="Gender"
+                placeholder="Select gender"
                 error={errors.gender}
                 {...field}
               />
@@ -229,6 +296,7 @@ export default function Register() {
               <SelectBox
                 options={MaterialStatus}
                 label="Marital Status"
+                placeholder="Select marital status"
                 error={errors.maritalStatus}
                 {...field}
               />
@@ -240,7 +308,7 @@ export default function Register() {
             rules={{ required: "PAN number is required" }}
             render={({ field }) => (
               <Input
-                label="Pan Number"
+                label="PAN Number"
                 placeholder="Enter PAN number"
                 error={errors.panNumber}
                 {...field}
@@ -370,8 +438,8 @@ export default function Register() {
             rules={{ required: "Nominee name is required" }}
             render={({ field }) => (
               <Input
-                label="Name of the Nominee"
-                placeholder="Enter nominee name"
+                label="Name of Nominee"
+                placeholder="Enter name of nominee"
                 error={errors.nomineeName}
                 {...field}
               />
@@ -380,11 +448,11 @@ export default function Register() {
           <Controller
             name="relationshipWithNominee"
             control={control}
-            rules={{ required: "Relationship is required" }}
+            rules={{ required: "Relationship with nominee is required" }}
             render={({ field }) => (
               <Input
                 label="Relationship with Nominee"
-                placeholder="Enter relationship"
+                placeholder="Enter relationship with nominee"
                 error={errors.relationshipWithNominee}
                 {...field}
               />
@@ -393,7 +461,19 @@ export default function Register() {
           {/* <Controller
             name="sponsorId"
             control={control}
-            rules={{ required: "Sponsor ID is required" }}
+            rules={{
+              required: "Sponsor ID is required",
+              minLength: {
+                value: 4,
+                message: "Sponsor ID must be at least 4 characters",
+              },
+              validate: {
+                checkSponsor: async (value) => {
+                  await fetchSponsorDetails(value);
+                  return sponsorDetails !== null || "Sponsor not found";
+                },
+              },
+            }}
             render={({ field }) => (
               <Input
                 label="Sponsor ID"
@@ -402,83 +482,17 @@ export default function Register() {
                 {...field}
               />
             )}
-          /> */}
-          <Controller
-            name="sponsorId"
-            control={control}
-            rules={{ required: "Sponsor ID is required" }}
-            render={({ field }) => (
-              <div>
-                <Input
-                  label="Sponsor ID"
-                  placeholder="Enter sponsor ID"
-                  error={errors.sponsorId}
-                  {...field}
-                  onChange={(e) => {
-                    const { value } = e.target;
-                    field.onChange(value);
-                    fetchSponsorDetails(value);
-                  }}
-                />
-                {loadingSponsor && <p>Loading sponsor details...</p>}
-                {sponsorError && (
-                  <p className="text-red-500">* {sponsorError}</p>
-                )}
-                {sponsorDetails && (
-                  <div className="flex items-center gap-2 text-green-700  font-medium">
-                    <p>Verified </p>{" "}
-                    <span>
-                      <MdVerified />
-                    </span>
-                    {/* Display other sponsor details as needed */}
-                  </div>
-                )}
-              </div>
-            )}
           />
-          <div className="flex items-end  justify-around  ">
-            <span>
-              Sponsor Name :{" "}
-              <span className="text-blue-500 font-medium">
-                {sponsorDetails?.name}
-              </span>
-            </span>
-            <span>
-              Sponsor Placement Level :{" "}
-              <span className="text-blue-500 font-medium">
-                {sponsorDetails?.applicantPlacementLevel}
-              </span>
-            </span>
-          </div>
-          {/* <Controller
-            name="applicantPlacementLevel"
-            control={control}
-            rules={{ required: "Placement level is required" }}
-            render={({ field }) => (
-              <Input
-                label="Applicant Placement Level"
-                placeholder="Enter placement level"
-                error={errors.applicantPlacementLevel}
-                {...field}
-              />
-            )}
-          /> */}
-          <Controller
-            name="applicantPlacementLevel"
-            control={control}
-            rules={{ required: "Placement level is required" }}
-            render={({ field }) => (
-              <Input
-                label="Applicant Placement Level"
-                placeholder="Enter placement level"
-                error={errors.applicantPlacementLevel}
-                {...field}
-                // value={sponsorDetails ? sponsorDetails.applicantPlacementLevel : ""}
-                disabled={true}
-              />
-            )}
-          />
-          <div></div>
+          {loadingSponsor ? (
+            <p>Loading sponsor details...</p>
+          ) : sponsorDetails ? (
+            <div className="mt-4 flex items-center text-green-500">
+              <MdVerified className="mr-1" />
+              <span>{sponsorDetails.name}</span>
+            </div>
+          ) : sponsorError ? (
+            <div className="mt-4 text-red-500">{sponsorError}</div>
+          ) : null}
           <Controller
             name="joiningFee"
             control={control}
@@ -487,74 +501,93 @@ export default function Register() {
               <SelectBox
                 options={JoiningFee}
                 label="Joining Fee"
+                placeholder="Select joining fee"
                 error={errors.joiningFee}
                 {...field}
               />
             )}
-          />
-          <div>
-            <label className="block mb-3 font-medium">Applicant Photo</label>
-            <div
-              className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                applicantPhoto && "border-green-600 text-green-600"
-              }`}
-              onClick={() => handleUploadClick("applicantPhoto")}
-            >
-              {applicantPhoto ? "Uploaded" : "Upload image"}
+          /> */}
+          {/* <div>
+            <label className="block mb-2 text-sm font-medium text-gray-900">
+              Upload Photo of Applicant
+            </label>
+            <div className="flex items-center space-x-4">
+              <input
+                type="file"
+                ref={alpicantRef}
+                onChange={(e) => handleFileChange("applicantPhoto", e)}
+                style={{ display: "none" }}
+              />
+              <button
+                type="button"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                onClick={() => handleUploadClick("applicantPhoto")}
+              >
+                Upload Photo
+              </button>
+              {applicantPhoto && (
+                <span className="text-sm text-gray-700">
+                  {applicantPhoto.name}
+                </span>
+              )}
             </div>
-            <input
-              type="file"
-              ref={alpicantRef}
-              className="hidden"
-              onChange={(e) => handleFileChange("applicantPhoto", e)}
-            />
           </div>
           <div>
-            <label className="block mb-3 font-medium">Applicant Sign</label>
-            <div
-              className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                applicantSign && "border-green-600 text-green-600"
-              }`}
-              onClick={() => handleUploadClick("applicantSign")}
-            >
-              {applicantSign ? "Uploaded" : "Upload image"}
+            <label className="block mb-2 text-sm font-medium text-gray-900">
+              Upload Signature of Applicant
+            </label>
+            <div className="flex items-center space-x-4">
+              <input
+                type="file"
+                ref={apliacntSigRef}
+                onChange={(e) => handleFileChange("applicantSign", e)}
+                style={{ display: "none" }}
+              />
+              <button
+                type="button"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                onClick={() => handleUploadClick("applicantSign")}
+              >
+                Upload Signature
+              </button>
+              {applicantSign && (
+                <span className="text-sm text-gray-700">
+                  {applicantSign.name}
+                </span>
+              )}
             </div>
-            <input
-              type="file"
-              ref={apliacntSigRef}
-              className="hidden"
-              onChange={(e) => handleFileChange("applicantSign", e)}
-            />
           </div>
           <div>
-            <label className="block mb-3 font-medium">Sponsor Sign</label>
-            <div
-              className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                sponsorSign && "border-green-600 text-green-600"
-              }`}
-              onClick={() => handleUploadClick("sponsorSign")}
-            >
-              {sponsorSign ? "Uploaded" : "Upload image"}
+            <label className="block mb-2 text-sm font-medium text-gray-900">
+              Upload Signature of Sponsor
+            </label>
+            <div className="flex items-center space-x-4">
+              <input
+                type="file"
+                ref={sponserRef}
+                onChange={(e) => handleFileChange("sponsorSign", e)}
+                style={{ display: "none" }}
+              />
+              <button
+                type="button"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                onClick={() => handleUploadClick("sponsorSign")}
+              >
+                Upload Signature
+              </button>
+              {sponsorSign && (
+                <span className="text-sm text-gray-700">
+                  {sponsorSign.name}
+                </span>
+              )}
             </div>
-            <input
-              type="file"
-              ref={sponserRef}
-              className="hidden"
-              onChange={(e) => handleFileChange("sponsorSign", e)}
-            />
-          </div>
-          <div className="col-span-1 md:col-span-2 flex justify-end mt-4 space-x-6">
+          </div> */}
+          <div className="flex justify-end col-span-2">
             <button
               type="submit"
-              className="px-4 py-2 font-semibold text-red-500  "
+              className="bg-green-500 text-white px-6 py-2 rounded-lg"
             >
-              Discard
-            </button>
-            <button
-              type="submit"
-              className="px-10 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-700"
-            >
-              Next
+              Update Member
             </button>
           </div>
         </form>

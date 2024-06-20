@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { BaseUrl } from "../../request/URL";
 import Pagination from "../../components/Helpers/Pagination";
 import TableSkeleton from "../../components/Helpers/TableSkelton";
+import moment from "moment";
 
 export default function RegisterTable() {
   const [members, setMembers] = useState([]);
@@ -22,7 +23,7 @@ export default function RegisterTable() {
   const fetchMembers = async (query = "", page = 1) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseUrl}/member/list`, {
+      const response = await axios.get(`${BaseUrl}/member/list?limit=9`, {
         params: { search: query, page },
       });
       setMembers(response.data.members);
@@ -35,6 +36,7 @@ export default function RegisterTable() {
     }
   };
 
+  console.log(members);
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -43,9 +45,9 @@ export default function RegisterTable() {
     setCurrentPage(page);
   };
 
-  if (loading) {
-    return <TableSkeleton />;
-  }
+  // if (loading) {
+  //   return <TableSkeleton />;
+  // }
 
   if (error) {
     return <div>Error loading members: {error.message}</div>;
@@ -62,13 +64,13 @@ export default function RegisterTable() {
 
         <div className="flex flex-col md:flex-row justify-around gap-3">
           <div className="flex items-center justify-center md:justify-end">
-            <div className="border px-5 py-2 rounded-lg flex items-center gap-2 border-blue-500 w-full md:w-auto">
+            <div className="border px-5   rounded-lg flex items-center gap-2 border-blue-500 w-full md:w-auto">
               <IoIosSearch />
               <input
                 type="search"
                 value={searchQuery}
                 onChange={handleSearch}
-                className="outline-none w-full md:w-auto"
+                className="outline-none w-full md:w-auto border-0 focus:ring-0"
                 placeholder="Search..."
               />
             </div>
@@ -77,7 +79,7 @@ export default function RegisterTable() {
           <div className="flex justify-center md:justify-end">
             <button
               className="bg-blue-500 text-white px-5 py-2 rounded-lg"
-              onClick={() => navigate("/form")}
+              onClick={() => navigate("form")}
             >
               New Registration
             </button>
@@ -103,16 +105,27 @@ export default function RegisterTable() {
           <tbody>
             {members.length > 0 ? (
               members.map((member, index) => (
-                <tr key={member._id} className="border-t border-gray-200 ">
-                  <td className="p-2 py-3 text-left">{index + 1}</td>
+                <tr key={member._id} className="border-t border-gray-200 text-gray-700">
+                  <td className="p-2 py-4 text-left">{index + 1}</td>
                   <td className="p-2 text-left">{member?.memberId}</td>
                   <td className="p-2 text-left">{member?.name}</td>
                   <td className="p-2 text-left">{member?.phoneNumber}</td>
-                  <td className="p-2 text-left">15-2-2024</td>
+                  <td className="p-2 text-left"> {moment(new Date(member?.createdAt)).format("DD-MM-YYYY")}</td>
                   <td className="p-2 text-left">{member?.sponsorId}</td>
-                  <td className="p-2 text-left">2600 Rs</td>
-                  <td className="p-2 text-left">Active</td>
-                  <td className="p-2 text-left" onClick={()=>navigate(`/preview/${member?.memberId}`)}>
+                  <td className="p-2 text-left">{member?.joiningFee} Rs</td>
+                  <td
+                    className={`p-2 text-left ${
+                      member?.status === "Un Approved"
+                        ? "text-orange-500"
+                        : "text-green-500"
+                    }`}
+                  >
+                    {member.status}
+                  </td>
+                  <td
+                    className="p-2 text-left"
+                    onClick={() => navigate(`preview/${member?.memberId}`)}
+                  >
                     <button className="text-blue-500">
                       <IoIosEye />
                     </button>

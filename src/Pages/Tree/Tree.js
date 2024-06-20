@@ -24,11 +24,11 @@ export default function Tree() {
         </div>
 
         <div className="flex items-center justify-center md:justify-end">
-          <div className="border px-3 py-2 rounded-lg flex items-center gap-2 border-blue-500 w-full md:w-auto">
+          <div className="border px-3   rounded-lg flex items-center gap-2 border-blue-500 w-full md:w-auto">
             <IoIosSearch />
             <input
               type="search"
-              className="outline-none w-full md:w-auto"
+              className="outline-none w-full md:w-auto border-0 focus:ring-0"
               placeholder="Search..."
             />
           </div>
