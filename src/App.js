@@ -17,7 +17,7 @@ function App() {
       <div>
         <Navbar />
         <div className="main-container h-full bg-blue-50">
-          <div className="menu w-[15%] bg-white sm:block mt-1">
+          <div className="menu w-[21%] bg-white sm:block mt-1">
             <Menu />
           </div>
           <div className="content-container w-full">
@@ -42,7 +42,7 @@ function App() {
           element: <RegisterTable />,
           children: [
             {
-              path: "register/form",  
+              path: "form",
               element: <Register />,
             },
           ],
@@ -68,12 +68,13 @@ function App() {
           element: <Member />,
         },
         {
-          path: "/preview",
+          path: "/preview/:memberId",
           element: <Preview />,
         },
       ],
     },
   ]);
+  
 
   return <RouterProvider router={router} />;
 }

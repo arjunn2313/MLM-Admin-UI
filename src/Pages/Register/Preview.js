@@ -1,11 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { previewKey } from "../DummyData/Data";
 import SelectBox from "../../components/form/SelectBox";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { useLocation, useParams } from "react-router-dom";
+import axios from "axios";
+import { BaseUrl } from "../../request/URL";
 
-export default function Preview({ formData, onBack }) {
-  console.log(formData);
+export default function Preview() {
+
+  const [formData,setFormData] = useState()
+  const {memberId} = useParams()
+
+  useEffect(()=>{
+    axios.get(`${BaseUrl}/member/member-preview/${memberId}`).then((res)=>{
+      console.log(res);
+      setFormData(res.data)
+    }).catch((error)=>{
+      console.log(error);
+    })
+  },[])
+
+ 
+
+
+ 
   const previewData = [
     {
       key: "Member ID",
@@ -85,7 +104,7 @@ export default function Preview({ formData, onBack }) {
       <div className="d-flex items-center py-2 text-gray-800 cursor-pointer">
         <MdOutlineKeyboardBackspace
           size={30}
-          onClick={onBack}
+          // onClick={onBack}
           className="cursor-pointer"
         />
       </div>
@@ -95,7 +114,7 @@ export default function Preview({ formData, onBack }) {
             <h2 className="text-xl font-bold mb-4">Registration Form</h2>
             <button
               className="text-blue-500 hover:text-blue-700 flex items-center justify-center gap-2"
-              onClick={onBack}
+              // onClick={onBack}
             >
               <CiEdit />
               Edit
@@ -115,7 +134,7 @@ export default function Preview({ formData, onBack }) {
                 <label className="font-medium">Sponsor Sign</label>
               </div>
 
-              <div className="grid grid-cols-2  ">
+              {/* <div className="grid grid-cols-2  ">
                 <img
                   src={URL.createObjectURL(formData?.applicantSign)}
                   className="w-[203px] h-[149px]"
@@ -124,7 +143,7 @@ export default function Preview({ formData, onBack }) {
                   src={URL.createObjectURL(formData?.sponsorSign)}
                   className="w-[203px] h-[149px]"
                 />
-              </div>
+              </div> */}
 
               <div className="">
                 <label className="font-medium">Mode of Payment</label>
@@ -178,7 +197,7 @@ export default function Preview({ formData, onBack }) {
 
             <div>
               <img
-                src={URL.createObjectURL(formData?.applicantPhoto)}
+                src={`${BaseUrl}${formData?.applicantPhoto}`}
                 className="w-[170px] h-[170px]"
               />
             </div>

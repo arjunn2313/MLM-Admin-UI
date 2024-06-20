@@ -1,99 +1,63 @@
-import React from "react";
-import { IoIosSearch } from "react-icons/io";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { IoIosSearch, IoIosEye } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { IoIosEye } from "react-icons/io";
-
-const members = [
-  {
-    id: "ID202402",
-    name: "Aadhi",
-    phone: "+91 90876 54321",
-    joiningDate: "12/01/2024",
-    sponsorId: "ID202401",
-    payment: "Paid",
-    status: "Unapproved",
-  },
-  {
-    id: "ID202404",
-    name: "Amal Devis",
-    phone: "+91 90876 54321",
-    joiningDate: "01/02/2024",
-    sponsorId: "ID202401",
-    payment: "Paid",
-    status: "Approved",
-  },
-  {
-    id: "ID202405",
-    name: "Reenu",
-    phone: "+91 90876 54321",
-    joiningDate: "14/02/2024",
-    sponsorId: "ID202401",
-    payment: "Paid",
-    status: "Approved",
-  },
-  {
-    id: "ID202406",
-    name: "Praveen",
-    phone: "+91 90876 54321",
-    joiningDate: "20/02/2024",
-    sponsorId: "ID202402",
-    payment: "Paid",
-    status: "Unapproved",
-  },
-  {
-    id: "ID202407",
-    name: "Gokul",
-    phone: "+91 90876 54321",
-    joiningDate: "11/03/2024",
-    sponsorId: "ID202404",
-    payment: "Unpaid",
-    status: "Unapproved",
-  },
-  {
-    id: "ID202408",
-    name: "Ajith",
-    phone: "+91 90876 54321",
-    joiningDate: "23/03/2024",
-    sponsorId: "ID202404",
-    payment: "Paid",
-    status: "Unapproved",
-  },
-  {
-    id: "ID202409",
-    name: "Ajin",
-    phone: "+91 90876 54321",
-    joiningDate: "07/04/2024",
-    sponsorId: "ID202401",
-    payment: "Paid",
-    status: "Approved",
-  },
-  {
-    id: "ID202410",
-    name: "Sherin",
-    phone: "+91 90876 54321",
-    joiningDate: "18/04/2024",
-    sponsorId: "ID202404",
-    payment: "Paid",
-    status: "Approved",
-  },
-  {
-    id: "ID202411",
-    name: "Abish",
-    phone: "+91 90876 54321",
-    joiningDate: "30/04/2024",
-    sponsorId: "ID202405",
-    payment: "Unpaid",
-    status: "Unapproved",
-  },
-];
+import { BaseUrl } from "../../request/URL";
+import Pagination from "../../components/Helpers/Pagination";
+import TableSkeleton from "../../components/Helpers/TableSkelton";
 
 export default function RegisterTable() {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchMembers(searchQuery, currentPage);
+  }, [searchQuery, currentPage]);
+
+  const fetchMembers = async (query = "", page = 1) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${BaseUrl}/member/list`, {
+        params: { search: query, page },
+      });
+      setMembers(response.data.members);
+      setTotalPages(response.data.totalPages);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      setError(error);
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  if (loading) {
+    return <TableSkeleton />;
+  }
+
+  if (error) {
+    return <div>Error loading members: {error.message}</div>;
+  }
+
   return (
-    <div className="m-3 p-3 h-screen bg-white shadow-md rounded-md">
+    <div className="m-3 p-3 h-fit bg-white shadow-md rounded-md">
       <div className="grid grid-cols-1 md:grid-cols-2 p-3 gap-3">
         <div>
-          <h2 className="text-2xl font-semibold">Registered Members</h2>
+          <h2 className="text-2xl text-gray-700 roboto-light-italic">
+            Registered Members
+          </h2>
         </div>
 
         <div className="flex flex-col md:flex-row justify-around gap-3">
@@ -102,6 +66,8 @@ export default function RegisterTable() {
               <IoIosSearch />
               <input
                 type="search"
+                value={searchQuery}
+                onChange={handleSearch}
                 className="outline-none w-full md:w-auto"
                 placeholder="Search..."
               />
@@ -121,7 +87,7 @@ export default function RegisterTable() {
 
       <div className="overflow-x-auto">
         <table className="min-w-full mt-8">
-          <thead className=" ">
+          <thead>
             <tr>
               <th className="p-2 font-bold text-left">Sl. no.</th>
               <th className="p-2 font-bold text-left">Member ID</th>
@@ -135,24 +101,40 @@ export default function RegisterTable() {
             </tr>
           </thead>
           <tbody>
-            {members.map((member, index) => (
-              <tr key={member.id} className="border-t border-gray-200">
-                <td className="p-2 text-left">0{index + 1}</td>
-                <td className="p-2 text-left">{member.id}</td>
-                <td className="p-2 text-left">{member.name}</td>
-                <td className="p-2 text-left">{member.phone}</td>
-                <td className="p-2 text-left">{member.joiningDate}</td>
-                <td className="p-2 text-left">{member.sponsorId}</td>
-                <td className="p-2 text-left">{member.payment}</td>
-                <td className="p-2 text-left">{member.status}</td>
-                <td className="p-2 text-left">
-                  <button className="text-blue-500"><IoIosEye/></button>
+            {members.length > 0 ? (
+              members.map((member, index) => (
+                <tr key={member._id} className="border-t border-gray-200 ">
+                  <td className="p-2 py-3 text-left">{index + 1}</td>
+                  <td className="p-2 text-left">{member?.memberId}</td>
+                  <td className="p-2 text-left">{member?.name}</td>
+                  <td className="p-2 text-left">{member?.phoneNumber}</td>
+                  <td className="p-2 text-left">15-2-2024</td>
+                  <td className="p-2 text-left">{member?.sponsorId}</td>
+                  <td className="p-2 text-left">2600 Rs</td>
+                  <td className="p-2 text-left">Active</td>
+                  <td className="p-2 text-left" onClick={()=>navigate(`/preview/${member?.memberId}`)}>
+                    <button className="text-blue-500">
+                      <IoIosEye />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="p-2 text-center">
+                  No members found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

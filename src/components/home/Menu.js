@@ -12,15 +12,15 @@ export default function Menu() {
   const [isTreeOpen, setIsTreeOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen ">
       <nav className={`md:block ${isOpen ? "block" : "hidden"}`}>
-        <ul className="space-y-3 py-3 font-medium">
+        <ul className="space-y-3 py-3   text-gray-600 roboto-light-italic">
           <li>
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `flex items-center space-x-4 py-2 px-4 hover:bg-blue-500 hover:text-white ${
-                  isActive ? "text-blue-700" : ""
+                `flex items-center  space-x-4 py-2 px-6 hover:bg-blue-500 hover:text-white ${
+                  isActive ? "text-blue-700 border-l-4 border-blue-700" : ""
                 }`
               }
             >
@@ -33,8 +33,8 @@ export default function Menu() {
             <NavLink
               to="/register"
               className={({ isActive }) =>
-                ` flex items-center space-x-4 py-2 px-4 hover:bg-blue-500 hover:text-white ${
-                  isActive ? "text-blue-700 " : ""
+                ` flex items-center space-x-4 py-2 px-5 hover:bg-blue-500 hover:text-white ${
+                  isActive ? "text-blue-700 border-l-4 border-blue-700" : ""
                 }`
               }
             >
@@ -45,7 +45,7 @@ export default function Menu() {
 
           <li>
             <div
-              className="flex items-center space-x-4 py-2 px-4 hover:bg-blue-500 hover:text-white cursor-pointer"
+              className="flex items-center space-x-4 py-2 px-5 hover:bg-blue-500 hover:text-white cursor-pointer"
               onClick={() => setIsTreeOpen(!isTreeOpen)}
             >
               <GiChainLightning />
@@ -54,7 +54,7 @@ export default function Menu() {
             </div>
             {isTreeOpen && (
               <div className="relative">
-                <ul className="space-y-3   font-medium mt-2 ps-10 menu-stepper">
+                <ul className="space-y-3  roboto-light-italic  mt-2 ps-12 menu-stepper">
                   <li>
                     <NavLink to="/tree">Tree View</NavLink>
                   </li>
@@ -73,8 +73,8 @@ export default function Menu() {
             <NavLink
               to="/members"
               className={({ isActive }) =>
-                `flex items-center space-x-4 py-2 px-4 hover:bg-blue-500 hover:text-white ${
-                  isActive ? "text-blue-500" : ""
+                `flex items-center space-x-4 py-2 px-5 hover:bg-blue-500 hover:text-white ${
+                  isActive ? "text-blue-700 border-l-4 border-blue-700" : ""
                 }`
               }
             >

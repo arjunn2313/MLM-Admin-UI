@@ -64,9 +64,9 @@ position: absolute;
 background:rgba(200, 200, 200, 1);
 width: 10px;
 height: 10px;
-margin-top: 15px;
+margin-top: 12px;
 border-radius: 50%;
-left: 10%;
+left: 10.5%;
 transform: translateY(-50%);
 z-index: 10;
  
@@ -74,4 +74,16 @@ z-index: 10;
  
 .menu-stepper li a.active::before{
   background-color: rgba(33, 150, 243, 1);
+}
+
+.roboto-regular {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.roboto-light-italic {
+  font-family: "Roboto", sans-serif;
+ 
+ font-weight: 400;
 }

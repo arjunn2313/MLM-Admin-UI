@@ -7,11 +7,13 @@ export default function Input({
   onChange,
   onBlur,
   error,
+  disabled
 }) {
   return (
     <div className="mb-4  w-full  ">
       <label className="block mb-3 font-medium">{label}</label>
       <input
+      disabled={disabled}
         type="text"
         className={`w-full border ${
           error ? "border-red-600" : "border-gray-600"
