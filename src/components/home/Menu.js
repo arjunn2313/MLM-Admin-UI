@@ -27,7 +27,7 @@ export default function Menu() {
                 }`
               }
             >
-              <MdOutlineDashboard size={20}/>
+              <MdOutlineDashboard size={20} />
               <span>Dashboard</span>
             </NavLink>
           </li>
@@ -41,7 +41,7 @@ export default function Menu() {
                 }`
               }
             >
-              <BiLockAlt size={20}/>
+              <BiLockAlt size={20} />
               <span>Register</span>
             </NavLink>
           </li>
@@ -55,7 +55,7 @@ export default function Menu() {
                 }`
               }
             >
-              <ImTree size={20}/>
+              <ImTree size={20} />
               <span>Tree</span>
             </NavLink>
           </li>
@@ -95,7 +95,7 @@ export default function Menu() {
                 }`
               }
             >
-              <IoPeopleOutline size={20}/>
+              <IoPeopleOutline size={20} />
               <span>Members</span>
             </NavLink>
           </li>
@@ -109,7 +109,7 @@ export default function Menu() {
                 }`
               }
             >
-              <SlSettings size={20}/>
+              <SlSettings size={20} />
               <span>Settings</span>
             </NavLink>
           </li>
@@ -123,7 +123,7 @@ export default function Menu() {
                 }`
               }
             >
-              <TbFileDescription size={20}/>
+              <TbFileDescription size={20} />
               <span>Reports</span>
             </NavLink>
           </li>

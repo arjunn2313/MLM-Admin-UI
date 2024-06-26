@@ -14,6 +14,8 @@ import UpdateMember from "./Pages/Register/MemberEdit";
 import District from "./Pages/Tree/district";
 import Settings from "./Pages/settings/Settings";
 import Report from "./Pages/reports/Report";
+import SectionTable from "./Pages/Tree/Section";
+import Section from "./Pages/Tree/Section";
 
 
 // Define Layout component to avoid repetition
@@ -89,6 +91,14 @@ const router = createHashRouter([
       {
         path: "district",
         element: <District/>,
+      },
+      {
+        path: "district/:name/:districtId",
+        element: <Section/>,
+      },
+      {
+        path: "district/:name/new-tree",
+        element: <Register/>,
       },
     ],
   },
