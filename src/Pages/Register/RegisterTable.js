@@ -4,7 +4,7 @@ import { IoIosSearch, IoIosEye } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { BaseUrl } from "../../request/URL";
 import Pagination from "../../components/Helpers/Pagination";
-import TableSkeleton from "../../components/Helpers/TableSkelton";
+ 
 import moment from "moment";
 
 export default function RegisterTable() {

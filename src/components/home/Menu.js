@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { MdOutlineDashboard } from "react-icons/md";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { NavLink } from "react-router-dom";
-import { HiOutlineUserGroup } from "react-icons/hi2";
-import { GiChainLightning } from "react-icons/gi";
+import { BiLockAlt } from "react-icons/bi";
 import { PiUsersDuotone } from "react-icons/pi";
 import { LiaUserPlusSolid } from "react-icons/lia";
+import { ImTree } from "react-icons/im";
+import { IoPeopleOutline } from "react-icons/io5";
+import { SlSettings } from "react-icons/sl";
+import { TbFileDescription } from "react-icons/tb";
 
 export default function Menu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +17,7 @@ export default function Menu() {
   return (
     <div className="flex flex-col h-screen ">
       <nav className={`md:block ${isOpen ? "block" : "hidden"}`}>
-        <ul className="space-y-3 py-3   text-gray-600 roboto-light-italic">
+        <ul className="space-y-3 py-3  text-lg text-gray-600 roboto-light-italic">
           <li>
             <NavLink
               to="/"
@@ -24,7 +27,7 @@ export default function Menu() {
                 }`
               }
             >
-              <MdOutlineDashboard />
+              <MdOutlineDashboard size={20}/>
               <span>Dashboard</span>
             </NavLink>
           </li>
@@ -38,11 +41,25 @@ export default function Menu() {
                 }`
               }
             >
-              <LiaUserPlusSolid />
+              <BiLockAlt size={20}/>
               <span>Register</span>
             </NavLink>
           </li>
 
+          <li>
+            <NavLink
+              to="/tree/district"
+              className={({ isActive }) =>
+                ` flex items-center space-x-4 py-2 px-5 hover:bg-blue-500 hover:text-white ${
+                  isActive ? "text-blue-700 border-l-4 border-blue-700" : ""
+                }`
+              }
+            >
+              <ImTree size={20}/>
+              <span>Tree</span>
+            </NavLink>
+          </li>
+          {/* 
           <li>
             <div
               className="flex items-center space-x-4 py-2 px-5 hover:bg-blue-500 hover:text-white cursor-pointer"
@@ -67,7 +84,7 @@ export default function Menu() {
                 </ul>
               </div>
             )}
-          </li>
+          </li> */}
 
           <li>
             <NavLink
@@ -78,8 +95,36 @@ export default function Menu() {
                 }`
               }
             >
-              <PiUsersDuotone />
+              <IoPeopleOutline size={20}/>
               <span>Members</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/settings"
+              className={({ isActive }) =>
+                `flex items-center space-x-4 py-2 px-5 hover:bg-blue-500 hover:text-white ${
+                  isActive ? "text-blue-700 border-l-4 border-blue-700" : ""
+                }`
+              }
+            >
+              <SlSettings size={20}/>
+              <span>Settings</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/reports"
+              className={({ isActive }) =>
+                `flex items-center space-x-4 py-2 px-5 hover:bg-blue-500 hover:text-white ${
+                  isActive ? "text-blue-700 border-l-4 border-blue-700" : ""
+                }`
+              }
+            >
+              <TbFileDescription size={20}/>
+              <span>Reports</span>
             </NavLink>
           </li>
         </ul>

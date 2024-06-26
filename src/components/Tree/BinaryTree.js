@@ -7,7 +7,7 @@ import axios from "axios";
 
 import "./binaryTree.css";
 import { BaseUrl } from "../../request/URL";
-import CustomPopover from "../../components/Helpers/PopOver";
+import CustomPopover from "../Helpers/PopOver";
 
 export default function BinaryTree() {
   const treeContainer = useRef(null);
@@ -60,8 +60,8 @@ export default function BinaryTree() {
     
       // Set popover position
       setPopoverPosition({
-        x: centerX,
-        y: centerY + window.scrollY + 10, // Adjust as per your design
+        x: centerX - 120 ,
+        y: centerY + window.scrollY + 30, // Adjust as per your design
       });
     };
     

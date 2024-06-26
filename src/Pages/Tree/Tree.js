@@ -1,6 +1,6 @@
 import React from "react";
 import { IoIosSearch } from "react-icons/io";
-import BinaryTree from "./BinaryTree";
+import BinaryTree from "../../components/Tree/BinaryTree";
 
 export default function Tree() {
   return (
