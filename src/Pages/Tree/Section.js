@@ -69,7 +69,7 @@ export default function Section() {
             </div>
 
             <div>
-              <button className="bg-blue-500 text-white px-5 py-1 rounded-md">
+              <button className="bg-blue-500 text-white px-5 py-1 rounded-md" onClick={()=>navigate("new-tree")}>
                 New Tree
               </button>
             </div>

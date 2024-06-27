@@ -1,4 +1,9 @@
-import { Outlet, RouterProvider, createBrowserRouter, createHashRouter } from "react-router-dom";
+import {
+  Outlet,
+  RouterProvider,
+  createBrowserRouter,
+  createHashRouter,
+} from "react-router-dom";
 import "./App.css";
 import Home from "./Pages/Home/Home";
 import Register from "./Pages/Register/Register";
@@ -16,7 +21,7 @@ import Settings from "./Pages/settings/Settings";
 import Report from "./Pages/reports/Report";
 import SectionTable from "./Pages/Tree/Section";
 import Section from "./Pages/Tree/Section";
-
+import TreeForm from "./Pages/Tree/Tree-form";
 
 // Define Layout component to avoid repetition
 const Layout = ({ children }) => (
@@ -90,15 +95,15 @@ const router = createHashRouter([
     children: [
       {
         path: "district",
-        element: <District/>,
+        element: <District />,
       },
       {
         path: "district/:name/:districtId",
-        element: <Section/>,
+        element: <Section />,
       },
       {
-        path: "district/:name/new-tree",
-        element: <Register/>,
+        path: "district/:name/:districtId/new-tree",
+        element: <TreeForm />,
       },
     ],
   },
@@ -106,43 +111,43 @@ const router = createHashRouter([
     path: "/members",
     element: (
       <Layout>
-        <Outlet/>
+        <Outlet />
       </Layout>
     ),
-    children:[
+    children: [
       {
-        path : "",
-        element:<Member/>
-      }
-    ]
+        path: "",
+        element: <Member />,
+      },
+    ],
   },
   {
     path: "/settings",
     element: (
       <Layout>
-        <Outlet/>
+        <Outlet />
       </Layout>
     ),
-    children:[
+    children: [
       {
-        path : "",
-        element:<Settings/>
-      }
-    ]
+        path: "",
+        element: <Settings />,
+      },
+    ],
   },
   {
     path: "/reports",
     element: (
       <Layout>
-        <Outlet/>
+        <Outlet />
       </Layout>
     ),
-    children:[
+    children: [
       {
-        path : "",
-        element:<Report/>
-      }
-    ]
+        path: "",
+        element: <Report />,
+      },
+    ],
   },
 ]);
 

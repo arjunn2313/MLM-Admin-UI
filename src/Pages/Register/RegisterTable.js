@@ -4,7 +4,7 @@ import { IoIosSearch, IoIosEye } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { BaseUrl } from "../../request/URL";
 import Pagination from "../../components/Helpers/Pagination";
- 
+
 import moment from "moment";
 
 export default function RegisterTable() {
@@ -23,7 +23,7 @@ export default function RegisterTable() {
   const fetchMembers = async (query = "", page = 1) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseUrl}/member/list?limit=9`, {
+      const response = await axios.get(`${BaseUrl}/agent/list?limit=9`, {
         params: { search: query, page },
       });
       setMembers(response.data.members);
@@ -105,13 +105,23 @@ export default function RegisterTable() {
           <tbody>
             {members.length > 0 ? (
               members.map((member, index) => (
-                <tr key={member._id} className="border-t border-gray-200 text-gray-700">
+                <tr
+                  key={member._id}
+                  className="border-t border-gray-200 text-gray-700"
+                >
                   <td className="p-2 py-4 text-left">{index + 1}</td>
                   <td className="p-2 text-left">{member?.memberId}</td>
                   <td className="p-2 text-left">{member?.name}</td>
                   <td className="p-2 text-left">{member?.phoneNumber}</td>
-                  <td className="p-2 text-left"> {moment(new Date(member?.createdAt)).format("DD-MM-YYYY")}</td>
-                  <td className="p-2 text-left">{member?.sponsorId}</td>
+                  <td className="p-2 text-left">
+                    {" "}
+                    {moment(new Date(member?.createdAt)).format("DD-MM-YYYY")}
+                  </td>
+                  {member.isHead ? (
+                    <td className="p-2 text-left">Tree Head</td>
+                  ) : (
+                    <td className="p-2 text-left">{member?.sponsorId}</td>
+                  )}
                   <td className="p-2 text-left">{member?.joiningFee} Rs</td>
                   <td
                     className={`p-2 text-left ${
