@@ -8,6 +8,7 @@ import axios from "axios";
 import "./binaryTree.css";
 import { BaseUrl } from "../../request/URL";
 import CustomPopover from "../Helpers/PopOver";
+import { useParams } from "react-router-dom";
 
 export default function BinaryTree() {
   const treeContainer = useRef(null);
@@ -16,12 +17,13 @@ export default function BinaryTree() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [popoverContent, setPopoverContent] = useState("");
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
+  const {headId} = useParams()
 
   useEffect(() => {
     const fetchTreeData = async () => {
       try {
         const response = await axios.get(
-          `${BaseUrl}/member/tree-node-tree/ID202406001`
+          `${BaseUrl}/agent/tree-node-tree/${headId}`
         );
         setTreeData(response.data);
       } catch (error) {

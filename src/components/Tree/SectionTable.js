@@ -1,7 +1,9 @@
 import React from "react";
 import Spinners from "../placeholders/Spinners";
+import { useNavigate } from "react-router-dom";
 
 export default function SectionTable({ sectionData, loading }) {
+  const navigate = useNavigate();
   const tableHeading = [
     "Sl. no.",
     "Tree Name ",
@@ -41,8 +43,15 @@ export default function SectionTable({ sectionData, loading }) {
                   <td className="p-2  text-left">{data.treeName}</td>
                   <td className="p-2  text-left">{data.headName}</td>
                   <td className="p-2  text-left">{data.levels}</td>
-                  <td className="p-2  text-left">{data.levels}</td>
-                  <td className="p-2  text-left ">
+                  <td className="p-2  text-left">{data.totalMembers}</td>
+                  <td
+                    className="p-2  text-left "
+                    onClick={() =>
+                      navigate(
+                        `tree/${data.sectionId}/${data.memberId}/${data.treeName}`
+                      )
+                    }
+                  >
                     <img
                       src="assets\Mask group.svg"
                       alt="tree-icon"

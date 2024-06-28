@@ -6,7 +6,7 @@ import { BaseUrl } from "../../request/URL";
 import axios from "axios";
 import Spinners from "../../components/placeholders/Spinners";
 
-export default function Downlinemember() {
+export default function Member() {
   const [members, setMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +27,7 @@ export default function Downlinemember() {
   const fetchSectionData = async () => {
     try {
       const response = await axios.get(
-        `${BaseUrl}/agent/downline-members/${treeName}`
+        `${BaseUrl}/agent/all-tree-members/${treeName}`
       );
       setMembers(response.data.members);
     } catch (error) {
@@ -37,8 +37,8 @@ export default function Downlinemember() {
     }
   };
 
-  if(loading){
-    return <Spinners/>
+  if (loading) {
+    return <Spinners />;
   }
 
   return (
@@ -77,7 +77,7 @@ export default function Downlinemember() {
               <th className="p-2 font-bold text-left">Name</th>
               <th className="p-2 font-bold text-left">Level</th>
               <th className="p-2 font-bold text-left">Sponsor ID</th>
-              <th className="p-2 font-bold text-left">Placement</th>
+
               <th className="p-2 font-bold text-left">Action</th>
             </tr>
           </thead>
@@ -92,14 +92,16 @@ export default function Downlinemember() {
                   <td className="p-2 text-left">{member?.memberId}</td>
                   <td className="p-2 text-left">{member?.name}</td>
                   <td className="p-2 text-left">{member?.level}</td>
-                  <td className="p-2 text-left">{member?.sponsorId}</td>
-                  <td className="p-2 text-left">{member?.sponsorId}</td>
+                  {member?.isHead ? (
+                    <td className="p-2 text-left">Head</td>
+                  ) : (
+                    <td className="p-2 text-left">{member?.sponsorId}</td>
+                  )}
+
                   <td className="p-2  text-left ">
-                    <img
-                      src="assets\Mask group.svg"
-                      alt="tree-icon"
-                      className="bg-orange-50 p-1 rounded-lg"
-                    />
+                    <button className="text-blue-500">
+                      <IoIosEye />
+                    </button>
                   </td>
                 </tr>
               ))

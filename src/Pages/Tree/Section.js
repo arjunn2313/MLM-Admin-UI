@@ -12,6 +12,8 @@ export default function Section() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  
+
   const fetchSectionData = async () => {
     try {
       const response = await axios.get(`${BaseUrl}/section/list/${districtId}`);

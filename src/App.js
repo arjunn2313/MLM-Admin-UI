@@ -22,13 +22,14 @@ import Report from "./Pages/reports/Report";
 import SectionTable from "./Pages/Tree/Section";
 import Section from "./Pages/Tree/Section";
 import TreeForm from "./Pages/Tree/Tree-form";
+import TreeTabContainer from "./Pages/Tree/TreeTabContainer";
 
 // Define Layout component to avoid repetition
 const Layout = ({ children }) => (
   <div>
     <Navbar />
     <div className="main-container h-full bg-blue-50">
-      <div className="menu w-[21%] bg-white sm:block mt-1">
+      <div className="menu w-[21%] bg-white hidden lg:block  mt-1">
         <Menu />
       </div>
       <div className="content-container w-full">{children}</div>
@@ -104,6 +105,10 @@ const router = createHashRouter([
       {
         path: "district/:name/:districtId/new-tree",
         element: <TreeForm />,
+      },
+      {
+        path: "district/:name/:districtId/tree/:treeId/:headId/:treeName",
+        element: <TreeTabContainer />,
       },
     ],
   },

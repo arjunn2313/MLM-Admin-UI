@@ -93,7 +93,7 @@ export default function Register() {
     formData.append("sponsorSign", sponsorSign);
 
     try {
-      const res = await axios.post(`${BaseUrl}/member/register`, formData, {
+      const res = await axios.post(`${BaseUrl}/agent/register`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

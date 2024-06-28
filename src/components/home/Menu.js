@@ -16,7 +16,7 @@ export default function Menu() {
 
   return (
     <div className="flex flex-col h-screen ">
-      <nav className={`md:block ${isOpen ? "block" : "hidden"}`}>
+      <nav >
         <ul className="space-y-3 py-3  text-lg text-gray-600 roboto-light-italic">
           <li>
             <NavLink

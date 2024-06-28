@@ -14,8 +14,8 @@ export default function Sponsors() {
     setSearchQuery(event.target.value);
   };
   return (
-    <div className="m-3 p-3 h-fit bg-white shadow-md rounded-md">
-      <div className="grid grid-cols-1 md:grid-cols-2 p-3 gap-3">
+    <div className=" p-3 h-fit bg-white shadow-md rounded-md">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 p-3 gap-3">
         <div>
           <h2 className="text-2xl text-gray-700 roboto-light-italic">
             Sponsors
@@ -45,7 +45,7 @@ export default function Sponsors() {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="overflow-x-auto">
         <table className="min-w-full mt-8">
