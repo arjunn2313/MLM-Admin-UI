@@ -13,8 +13,7 @@ import Menu from "./components/home/Menu";
 import Member from "./Pages/Members/Member";
 import Preview from "./Pages/Register/Preview";
 import RegisterTable from "./Pages/Register/RegisterTable";
-import Sponsors from "./Pages/Tree/Sponsors";
-import Downlinemember from "./Pages/Tree/Downline-member";
+import Downlinemember from "./Pages/Tree/Downline/Downline-member";
 import UpdateMember from "./Pages/Register/MemberEdit";
 import District from "./Pages/Tree/district";
 import Settings from "./Pages/settings/Settings";
@@ -23,16 +22,18 @@ import SectionTable from "./Pages/Tree/Section";
 import Section from "./Pages/Tree/Section";
 import TreeForm from "./Pages/Tree/Tree-form";
 import TreeTabContainer from "./Pages/Tree/TreeTabContainer";
+import Sponsors from "./Pages/Tree/sponsors/Sponsors";
+import SponsorTree from "./Pages/Tree/sponsors/SponsorTree";
 
 // Define Layout component to avoid repetition
 const Layout = ({ children }) => (
-  <div>
+  <div className="">
     <Navbar />
-    <div className="main-container h-full bg-blue-50">
-      <div className="menu w-[21%] bg-white hidden lg:block  mt-1">
+    <div className="main-container h-full bg-blue-50 ">
+      <div className="menu w-[21%] bg-white hidden lg:block    mt-1">
         <Menu />
       </div>
-      <div className="content-container w-full">{children}</div>
+      <div className="content-container w-full  ">{children}</div>
     </div>
   </div>
 );

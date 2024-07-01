@@ -15,7 +15,7 @@ export default function Menu() {
   const [isTreeOpen, setIsTreeOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen ">
+    <div className="flex flex-col h-screen   ">
       <nav >
         <ul className="space-y-3 py-3  text-lg text-gray-600 roboto-light-italic">
           <li>

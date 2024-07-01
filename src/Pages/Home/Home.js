@@ -12,10 +12,10 @@ export default function Home() {
         title="Bottom popover"
         content="And here's some amazing content. It's very engaging. Right?"
       /> */}
-        <CustomPopover
+        {/* <CustomPopover
         trigger={<button>Hover Me</button>} // Replace with your actual trigger element
         content="This is the popover content."
-      />
+      /> */}
       </div>
     </div>
   );

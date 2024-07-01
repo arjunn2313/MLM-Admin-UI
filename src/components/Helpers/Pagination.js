@@ -1,35 +1,64 @@
+// src/components/Pagination.js
+
 import React from 'react';
-import { IoIosArrowBack } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
+import PropTypes from 'prop-types';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pageNumbers.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage > 3 && currentPage < totalPages - 2) {
+        pageNumbers.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      } else {
+        pageNumbers.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      }
+    }
+    return pageNumbers;
+  };
+
   return (
-    <div className="flex justify-center items-center space-x-2 my-3 pt-10">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-3 py-3 bg-gray-200 text-gray-700 rounded-full disabled:opacity-50"
-      >
-        <IoIosArrowBack/>
-      </button>
-      <button
-        className={`px-4 py-2 rounded ${
-          currentPage
-            ? "text-white bg-blue-500 rounded-full"
-            : "bg-gray-200 text-gray-700"
-        }`}
-      >
-        {currentPage}
-      </button>
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-3 py-3 rounded-full bg-gray-200 text-gray-700   disabled:opacity-50"
-      >
-       <IoIosArrowForward/>
-      </button>
+    <div className='flex items-center justify-center'>
+      <div className="flex items-center space-x-2">
+        <button
+          className={`p-2 ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-500'}`}
+          onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <IoIosArrowBack size={25}/>
+        </button>
+        {getPageNumbers().map((number, index) => (
+          <button
+            key={index}
+            className={`p-2 w-10 h-10 rounded-[50%] font-semibold ${currentPage === number ? 'bg-blue-500 text-white' : 'text-gray-700'}`}
+            onClick={() => typeof number === 'number' && onPageChange(number)}
+            disabled={typeof number !== 'number'}
+          >
+            {number}
+          </button>
+        ))}
+        <button
+          className={`p-2 ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-500'}`}
+          onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <IoIosArrowForward  size={25}/>
+        </button>
+      </div>
     </div>
   );
+};
+
+Pagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
 };
 
 export default Pagination;

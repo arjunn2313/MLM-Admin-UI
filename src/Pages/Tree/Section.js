@@ -4,6 +4,7 @@ import SectionTable from "../../components/Tree/SectionTable";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import axios from "axios";
 import { BaseUrl } from "../../request/URL";
+import Pagination from "../../components/Helpers/Pagination";
 
 export default function Section() {
   const { name, districtId } = useParams();
@@ -11,32 +12,54 @@ export default function Section() {
   const [sectionData, setSectionData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   const fetchSectionData = async () => {
+    setLoading(true); // Make sure loading state is set before fetching
     try {
-      const response = await axios.get(`${BaseUrl}/section/list/${districtId}`);
+      const response = await axios.get(
+        `${BaseUrl}/section/list/${districtId}`, {
+          params: {
+            limit: 10,
+            search: searchQuery,
+            page: currentPage
+          }
+        }
+      );
       setSectionData(response.data.sections);
+      setTotalPages(response.data.totalPages);
+      setError(null); // Clear any previous errors
     } catch (error) {
-      setError(error);
+      setError(error.message || "An error occurred while fetching data.");
+      setSectionData([]); // Clear section data on error
     } finally {
-      setLoading(false);
+      setLoading(false); // Always set loading to false after fetch
     }
   };
 
   useEffect(() => {
     fetchSectionData();
-  }, [name]);
+  }, [name, searchQuery, currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1); // Reset to first page on new search
+  };
 
   return (
-    <div className="m-3">
+    <div className="m-3 ">
       <MdOutlineKeyboardBackspace
         size={30}
         className="my-3 text-gray-600 cursor-pointer"
         onClick={() => navigate(-1)}
       />
-      <div className=" bg-white rounded-lg px-5 py-5">
+      <div className=" h-[45rem] bg-white rounded-lg px-5 py-5">
         <div className="grid grid-cols-2 ">
           <div className="capitalize text-blue-500 roboto-c text-xl font-bold">
             {name}
@@ -65,13 +88,16 @@ export default function Section() {
                 id="default-search"
                 className="block w-54 py-1 ps-8 text-sm text-gray-900 rounded bg-white focus:ring-lavender--600 focus:border-lavender--600 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lavender--600 dark:focus:border-lavender--600"
                 placeholder="Search..."
-                //   value={searchQuery}
-                //   onChange={handleSearch}
+                value={searchQuery}
+                onChange={handleSearch}
               />
             </div>
 
             <div>
-              <button className="bg-blue-500 text-white px-5 py-1 rounded-md" onClick={()=>navigate("new-tree")}>
+              <button
+                className="bg-blue-500 text-white px-5 py-1 rounded-md"
+                onClick={() => navigate("new-tree")}
+              >
                 New Tree
               </button>
             </div>
@@ -82,6 +108,14 @@ export default function Section() {
         <div className="my-5">
           <SectionTable sectionData={sectionData} loading={loading} />
         </div>
+      </div>
+
+      <div className="py-2">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

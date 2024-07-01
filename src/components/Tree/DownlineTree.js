@@ -12,22 +12,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Spinners from "../placeholders/Spinners";
 
-export default function BinaryTree() {
+export default function DownlineTree({ member }) {
   const treeContainer = useRef(null);
   const [zoom, setZoom] = useState(1);
   const [treeData, setTreeData] = useState(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [popoverContent, setPopoverContent] = useState("");
-  const [loading, setLoading] = useState(true);
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
   const { headId } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTreeData();
+  }, [member]);
 
   const fetchTreeData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/agent/tree-node-tree/${headId}`
+        `${BaseUrl}/agent/tree-node-tree/${member}`
       );
       setTreeData(response.data);
     } catch (error) {
@@ -36,10 +40,6 @@ export default function BinaryTree() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchTreeData();
-  }, [headId]);
 
   const handleAddChild = async (parentId) => {
     alert(parentId);
@@ -182,7 +182,7 @@ export default function BinaryTree() {
       M ${source.x},${source.y + labelOffsetY}
       V ${source.y + verticalGap}
       H ${target.x}
-      V ${target.y - 30} 
+      V ${target.y - 30}
     `;
   };
 
@@ -194,12 +194,16 @@ export default function BinaryTree() {
     setZoom(zoom * 0.9);
   };
 
-  if(loading){
-    return <div className="h-20 flex items-center justify-center"><Spinners/></div>
+  if (loading) {
+    return (
+      <div className="h-20 flex items-center justify-center">
+        <Spinners />
+      </div>
+    );
   }
 
   return (
-    <div className="  h-full bg-white mt-3 tree-container">
+    <div className="  h-screen    bg-white mt-3 tree-container">
       {isPopoverOpen && (
         <CustomPopover
           posX={popoverPosition.x}
@@ -208,7 +212,7 @@ export default function BinaryTree() {
         />
       )}
 
-      <div className="flex items-end justify-end p-2 gap-8">
+      <div className=" flex items-end justify-end p-2 gap-8  ">
         <div className="shadow-lg p-3 flex rounded-full">
           <button onClick={handleZoomIn} className="p-1">
             <CiZoomIn size={25} color="#007bff" />
@@ -219,7 +223,12 @@ export default function BinaryTree() {
         </div>
 
         <div className="shadow-lg p-3 flex rounded-full">
-          <TfiReload size={25} color="#007bff" onClick={()=>fetchTreeData()} className="cursor-pointer"/>
+          <TfiReload
+            size={25}
+            color="#007bff"
+            onClick={() => fetchTreeData()}
+            className="cursor-pointer"
+          />
         </div>
       </div>
 

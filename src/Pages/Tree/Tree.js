@@ -36,11 +36,11 @@ export default function Tree() {
   console.log(sectionData);
 
   return (
-    <div>
-      <div className="w-full bg-white grid grid-cols-1 md:grid-cols-4 p-3 rounded-md gap-4">
+    <div className="  h-full">
+      <div className="w-full  bg-white grid grid-cols-1 md:grid-cols-4 p-3 rounded-md gap-4">
         <div className="flex items-center justify-center md:justify-start md:ps-10">
           <span className="text-3xl text-blue-500 font-bold">
-            {sectionData?.headName}
+            {sectionData?.treeName}
           </span>
         </div>
         <div className="flex flex-col items-center md:items-start gap-3 border-t md:border-t-0 md:border-l md:ps-5 border-blue-500 pt-3 md:pt-0">
@@ -74,8 +74,9 @@ export default function Tree() {
       </div>
 
       {/* tree */}
-
-      <BinaryTree />
+      <div className="h-full">
+        <BinaryTree />
+      </div>
     </div>
   );
 }

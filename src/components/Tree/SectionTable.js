@@ -16,7 +16,7 @@ export default function SectionTable({ sectionData, loading }) {
     return <Spinners />;
   }
   return (
-    <div className="overflow-x-auto  ">
+    <div className=" overflow-x-auto  ">
       {sectionData?.length === 0 ? (
         <div className="flex items-center justify-center">
           <p>No data found</p>

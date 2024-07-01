@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import Tree from "./Tree";
-import Sponsors from "./Sponsors";
-import Downlinemember from "./Downline-member";
-import Member from "./Member";
- 
+import Sponsors from "./sponsors/Sponsors";
+import SponsorTree from "./sponsors/SponsorTree";
+import SponsorContainer from "./sponsors/SponsorContainer";
+import Member from "./Member/Member";
+import DownlineContainer from "./Downline/downlineContainer";
 
 export default function TreeTabContainer() {
   const navigate = useNavigate();
@@ -13,6 +19,7 @@ export default function TreeTabContainer() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedTab = searchParams.get("tab") || "TreeView";
+  
 
   const handleTabChange = (tab) => {
     setSearchParams({ tab });
@@ -23,18 +30,19 @@ export default function TreeTabContainer() {
       case "TreeView":
         return <Tree />;
       case "Sponsors":
-        return <Sponsors />;
+        return <SponsorContainer />;
       case "DownlineMember":
-        return <Downlinemember />;
+        return <DownlineContainer />;
       case "MemberList":
         return <Member />;
+
       default:
-        return  null;
+        return null;
     }
   };
 
   return (
-    <div className="m-3">
+    <div className="m-3 ">
       <div className="flex items-center space-x-8">
         <MdOutlineKeyboardBackspace
           size={30}
@@ -93,7 +101,9 @@ export default function TreeTabContainer() {
       </div>
 
       {/* render items */}
-      <div className="mt-5">{renderContent()}</div>
+      <div className="mt-5  h-screen overflow-hidden">{renderContent()}</div>
     </div>
   );
 }
+
+ 

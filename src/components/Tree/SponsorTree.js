@@ -9,25 +9,30 @@ import "./binaryTree.css";
 import { BaseUrl } from "../../request/URL";
 import CustomPopover from "../Helpers/PopOver";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
 import Spinners from "../placeholders/Spinners";
+import { FaPlus } from "react-icons/fa";
 
-export default function BinaryTree() {
+export default function SponsorTree({ head, member }) {
   const treeContainer = useRef(null);
   const [zoom, setZoom] = useState(1);
   const [treeData, setTreeData] = useState(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [popoverContent, setPopoverContent] = useState("");
-  const [loading, setLoading] = useState(true);
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
-  const { headId } = useParams();
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  console.log(head);
+
+  useEffect(() => {
+    fetchTreeData();
+  }, [head]);
 
   const fetchTreeData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/agent/tree-node-tree/${headId}`
+        `${BaseUrl}/agent/tree-node-tree/${head}`
       );
       setTreeData(response.data);
     } catch (error) {
@@ -37,18 +42,17 @@ export default function BinaryTree() {
     }
   };
 
-  useEffect(() => {
-    fetchTreeData();
-  }, [headId]);
-
-  const handleAddChild = async (parentId) => {
-    alert(parentId);
-    navigate(`/register/form/?sponsorId=${parentId}`);
-  };
+  if (loading) {
+    return (
+      <div className="h-20 flex items-center justify-center">
+        <Spinners />
+      </div>
+    );
+  }
 
   const renderNode = ({ nodeDatum }) => {
     const childrenCount = nodeDatum.children ? nodeDatum.children.length : 0;
-    const width = 200;
+    const width = 100;
     const startX = -((childrenCount - 1) * width) / 2;
     const stepX = width;
 
@@ -71,6 +75,27 @@ export default function BinaryTree() {
     const handleMouseOut = () => {
       setIsPopoverOpen(false);
     };
+
+    const handleAddChild = async (parentId) => {
+      alert(parentId);
+      navigate(`/register/form/?sponsorId=${parentId}`);
+    };
+
+    // Define the custom color based on the head prop
+
+    const nodeColor =
+      nodeDatum.name === head
+        ? "rgba(255, 241, 241, 1)"
+        : nodeDatum.name === member
+        ? "rgba(255, 240, 227, 1)"
+        : "rgba(237, 247, 255, 1)";
+
+    const strokeColor =
+      nodeDatum.name === head
+        ? "rgba(255, 114, 114, 1)"
+        : nodeDatum.name === member
+        ? "rgba(170, 91, 23, 1)"
+        : "#007bff";
 
     if (nodeDatum.isAddButton) {
       return (
@@ -112,11 +137,12 @@ export default function BinaryTree() {
       <g>
         <circle
           r={30}
-          fill="#007bff16"
-          stroke="#007bff"
+          fill={nodeColor}
+          stroke={strokeColor}
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
         />
+
         <foreignObject x="-15" y="-15" width="30" height="30">
           <div
             style={{
@@ -129,21 +155,23 @@ export default function BinaryTree() {
             onMouseOut={handleMouseOut}
           >
             <PiUserCircleLight
-              style={{ width: "100%", height: "100%", color: "#007bff" }}
+              style={{ width: "100%", height: "100%", color: strokeColor }}
               size={50}
             />
           </div>
         </foreignObject>
+
         <rect
           x={-50}
           y={40}
           width={100}
           height={20}
           strokeWidth="0"
-          fill="#007bff"
+          fill={strokeColor}
           rx={5}
           ry={5}
         />
+
         <text fill="#fff" x="0" y="55" textAnchor="middle" strokeWidth="0">
           {nodeDatum.name}
         </text>
@@ -159,7 +187,7 @@ export default function BinaryTree() {
                 orientation="vertical"
                 translate={{ x: 0, y: 0 }}
                 pathFunc={() => ""}
-                renderCustomNodeElement={renderNode}
+                renderCustomNodeElement={(rd) => renderNode({ ...rd }, head)}
                 zoom={zoom}
                 zoomable={false}
                 collapsible={false}
@@ -182,7 +210,7 @@ export default function BinaryTree() {
       M ${source.x},${source.y + labelOffsetY}
       V ${source.y + verticalGap}
       H ${target.x}
-      V ${target.y - 30} 
+      V ${target.y - 30}
     `;
   };
 
@@ -194,12 +222,8 @@ export default function BinaryTree() {
     setZoom(zoom * 0.9);
   };
 
-  if(loading){
-    return <div className="h-20 flex items-center justify-center"><Spinners/></div>
-  }
-
   return (
-    <div className="  h-full bg-white mt-3 tree-container">
+    <div className="h-screen bg-white mt-3 tree-container">
       {isPopoverOpen && (
         <CustomPopover
           posX={popoverPosition.x}
@@ -219,7 +243,12 @@ export default function BinaryTree() {
         </div>
 
         <div className="shadow-lg p-3 flex rounded-full">
-          <TfiReload size={25} color="#007bff" onClick={()=>fetchTreeData()} className="cursor-pointer"/>
+          <TfiReload
+            size={25}
+            color="#007bff"
+            onClick={() => fetchTreeData()}
+            className="cursor-pointer"
+          />
         </div>
       </div>
 
