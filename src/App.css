@@ -17,9 +17,9 @@ a {
 .menu-stepper::after {
   content: "";
   position: absolute;
-  width: 1px;
+  width: 1.5px;
   height: 80%;
-  left: 12.5%;
+  left: 12.1%;
   top: 13%;
   z-index: 0;
   background: rgba(200, 200, 200, 1);
@@ -30,7 +30,7 @@ a {
   background: rgba(200, 200, 200, 1);
   width: 8px;
   height: 8px;
-  margin-top: 15px;
+  margin-top: 18px;
   border-radius: 50%;
   left: 11%;
   transform: translateY(-50%);

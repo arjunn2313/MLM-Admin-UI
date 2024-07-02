@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { IoIosSearch, IoIosEye } from "react-icons/io";
-import moment from "moment";
-
+import Pagination from "../../../components/Helpers/Pagination";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BaseUrl } from "../../../request/URL";
 import Spinners from "../../../components/placeholders/Spinners";
-import Pagination from "../../../components/Helpers/Pagination";
 
-export default function Member() {
+export default function Referal() {
   const [members, setMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState();
   const navigate = useNavigate();
 
-  const { treeName } = useParams();
+  const treeName = "Arjun";
+
+  const categories = ["fdsv", "CSsc", "cssc"];
 
   useEffect(() => {
     fetchSectionData();
@@ -56,10 +56,22 @@ export default function Member() {
     setCurrentPage(page);
   };
 
+  const handleSelect = (item) => {
+    setSelectedCategory(item);
+  };
+
   return (
-    <div className="h-screen">
-      <div className="p-3 h-[90%]   bg-white shadow-md rounded-md">
-        <div className="flex items-center justify-end space-x-5">
+    <>
+      <div className="m-3 p-3 h-screen bg-white shadow-md rounded-md">
+        {/* filter */}
+
+        <div className="flex items-center justify-between space-x-5 p-2">
+          <div className="flex lg:space-x-8 items-center">
+            <span className="text-xl font-medium text-gray-700">
+              Referral Bonus
+            </span>
+          </div>
+
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
@@ -88,6 +100,7 @@ export default function Member() {
             />
           </div>
         </div>
+
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <Spinners />
@@ -124,11 +137,10 @@ export default function Member() {
                       )}
 
                       <td className="p-2  text-left ">
-                        <button className="text-blue-500 cursor-pointer"
-                        onClick={()=>navigate(`?tab=MemberList&tree=dash`)}
-                        >
-                          <IoIosEye />
-                        </button>
+                        <button
+                          className="text-blue-500 cursor-pointer"
+                          onClick={() => navigate(`${member?.memberId}`)}
+                        ></button>
                       </td>
                     </tr>
                   ))
@@ -151,6 +163,6 @@ export default function Member() {
           onPageChange={handlePageChange}
         />
       </div>
-    </div>
+    </>
   );
 }

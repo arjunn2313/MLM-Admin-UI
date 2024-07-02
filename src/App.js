@@ -16,7 +16,6 @@ import RegisterTable from "./Pages/Register/RegisterTable";
 import Downlinemember from "./Pages/Tree/Downline/Downline-member";
 import UpdateMember from "./Pages/Register/MemberEdit";
 import District from "./Pages/Tree/district";
-import Settings from "./Pages/settings/Settings";
 import Report from "./Pages/reports/Report";
 import SectionTable from "./Pages/Tree/Section";
 import Section from "./Pages/Tree/Section";
@@ -24,6 +23,11 @@ import TreeForm from "./Pages/Tree/Tree-form";
 import TreeTabContainer from "./Pages/Tree/TreeTabContainer";
 import Sponsors from "./Pages/Tree/sponsors/Sponsors";
 import SponsorTree from "./Pages/Tree/sponsors/SponsorTree";
+import MemberDashboard from "./Pages/Members/MemberDashboard";
+import MemberExpense from "./Pages/Members/MemberExpense";
+import Commission from "./Pages/Wallet/Commission/Commission";
+import Referal from "./Pages/Wallet/Referal/Referal";
+import Settings from "./Pages/Wallet/Settings/Settings";
 
 // Define Layout component to avoid repetition
 const Layout = ({ children }) => (
@@ -125,10 +129,18 @@ const router = createHashRouter([
         path: "",
         element: <Member />,
       },
+      {
+        path: ":id",
+        element: <MemberDashboard />,
+      },
+      {
+        path: ":id/expense",
+        element: <MemberExpense />,
+      },
     ],
   },
   {
-    path: "/settings",
+    path: "/wallet",
     element: (
       <Layout>
         <Outlet />
@@ -136,7 +148,15 @@ const router = createHashRouter([
     ),
     children: [
       {
-        path: "",
+        path: "commission",
+        element: <Commission />,
+      },
+      {
+        path: "referal",
+        element: <Referal />,
+      },
+      {
+        path: "settings",
         element: <Settings />,
       },
     ],

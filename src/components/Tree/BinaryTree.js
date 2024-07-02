@@ -194,12 +194,16 @@ export default function BinaryTree() {
     setZoom(zoom * 0.9);
   };
 
-  if(loading){
-    return <div className="h-20 flex items-center justify-center"><Spinners/></div>
+  if (loading) {
+    return (
+      <div className="h-20 flex items-center justify-center">
+        <Spinners />
+      </div>
+    );
   }
 
   return (
-    <div className="  h-full bg-white mt-3 tree-container">
+    <div className="   h-full bg-white mt-3 tree-container">
       {isPopoverOpen && (
         <CustomPopover
           posX={popoverPosition.x}
@@ -219,7 +223,12 @@ export default function BinaryTree() {
         </div>
 
         <div className="shadow-lg p-3 flex rounded-full">
-          <TfiReload size={25} color="#007bff" onClick={()=>fetchTreeData()} className="cursor-pointer"/>
+          <TfiReload
+            size={25}
+            color="#007bff"
+            onClick={() => fetchTreeData()}
+            className="cursor-pointer"
+          />
         </div>
       </div>
 

@@ -7,11 +7,9 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import Tree from "./Tree";
-import Sponsors from "./sponsors/Sponsors";
-import SponsorTree from "./sponsors/SponsorTree";
 import SponsorContainer from "./sponsors/SponsorContainer";
-import Member from "./Member/Member";
 import DownlineContainer from "./Downline/downlineContainer";
+import MemberContainer from "./Member/MemberContainer";
 
 export default function TreeTabContainer() {
   const navigate = useNavigate();
@@ -34,7 +32,7 @@ export default function TreeTabContainer() {
       case "DownlineMember":
         return <DownlineContainer />;
       case "MemberList":
-        return <Member />;
+        return <MemberContainer />;
 
       default:
         return null;
@@ -101,7 +99,7 @@ export default function TreeTabContainer() {
       </div>
 
       {/* render items */}
-      <div className="mt-5  h-screen overflow-hidden">{renderContent()}</div>
+      <div className="mt-5">{renderContent()}</div>
     </div>
   );
 }

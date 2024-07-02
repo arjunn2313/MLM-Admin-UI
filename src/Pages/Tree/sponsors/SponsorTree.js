@@ -11,7 +11,7 @@ export default function SponsorTree() {
 
 
   return (
-    <div>
+    <div className="h-screen overflow-hidden">
       <div className="bg-white w-full p-3 flex gap-10 rounded">
         <div className="flex flex-col px-10 space-y-3">
           <span className="font-medium">

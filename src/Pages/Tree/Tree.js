@@ -36,7 +36,7 @@ export default function Tree() {
   console.log(sectionData);
 
   return (
-    <div className="  h-full">
+    <div className="  h-screen overflow-hidden">
       <div className="w-full  bg-white grid grid-cols-1 md:grid-cols-4 p-3 rounded-md gap-4">
         <div className="flex items-center justify-center md:justify-start md:ps-10">
           <span className="text-3xl text-blue-500 font-bold">
