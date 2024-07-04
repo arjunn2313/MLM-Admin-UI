@@ -202,6 +202,7 @@ export default function Preview() {
               </div>
 
               {/* {formData?.status === "Un Approved" && ( */}
+              {formData?.isPayed ? null : (
                 <>
                   <div className="flex flex-col">
                     <label className="font-medium mb-2">Mode of Payment</label>
@@ -299,6 +300,7 @@ export default function Preview() {
                     </div>
                   </div>
                 </>
+              )}
               {/* )} */}
             </div>
 

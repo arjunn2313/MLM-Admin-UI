@@ -28,6 +28,7 @@ import MemberExpense from "./Pages/Members/MemberExpense";
 import Commission from "./Pages/Wallet/Commission/Commission";
 import Referal from "./Pages/Wallet/Referal/Referal";
 import Settings from "./Pages/Wallet/Settings/Settings";
+import CashDebit from "./components/payout";
 
 // Define Layout component to avoid repetition
 const Layout = ({ children }) => (
@@ -171,7 +172,7 @@ const router = createHashRouter([
     children: [
       {
         path: "",
-        element: <Report />,
+        element: <CashDebit />,
       },
     ],
   },

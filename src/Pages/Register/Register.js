@@ -449,19 +449,7 @@ export default function Register() {
                 />
               )}
             />
-            {/* <Controller
-            name="sponsorId"
-            control={control}
-            rules={{ required: "Sponsor ID is required" }}
-            render={({ field }) => (
-              <Input
-                label="Sponsor ID"
-                placeholder="Enter sponsor ID"
-                error={errors.sponsorId}
-                {...field}
-              />
-            )}
-          /> */}
+            {/* sponor id */}
             <Controller
               name="sponsorId"
               control={control}
@@ -509,19 +497,58 @@ export default function Register() {
                 </span>
               </span>
             </div>
-            {/* <Controller
-            name="applicantPlacementLevel"
-            control={control}
-            rules={{ required: "Placement level is required" }}
-            render={({ field }) => (
-              <Input
-                label="Applicant Placement Level"
-                placeholder="Enter placement level"
-                error={errors.applicantPlacementLevel}
-                {...field}
-              />
-            )}
-          /> */}
+
+            {/* placement Id */}
+ 
+            <Controller
+              name="sponsorId"
+              control={control}
+              rules={{ required: "Sponsor ID is required" }}
+              render={({ field }) => (
+                <div>
+                  <Input
+                    label="Placement ID"
+                    placeholder="Enter sponsor ID"
+                    error={errors.sponsorId}
+                    {...field}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      field.onChange(value);
+                      fetchSponsorDetails(value);
+                    }}
+                  />
+                  {loadingSponsor && <p>Loading sponsor details...</p>}
+                  {sponsorError && (
+                    <p className="text-red-500">* {sponsorError}</p>
+                  )}
+                  {sponsorDetails && (
+                    <div className="flex items-center gap-2 text-green-700  font-medium">
+                      <p>Verified </p>{" "}
+                      <span>
+                        <MdVerified />
+                      </span>
+                      {/* Display other sponsor details as needed */}
+                    </div>
+                  )}
+                </div>
+              )}
+            />
+            <div className="flex items-end  justify-around  ">
+              <span>
+              Placement Member Name : :{" "}
+                <span className="text-blue-500 font-medium">
+                  {sponsorDetails?.name}
+                </span>
+              </span>
+              <span>
+              Placement Member Level :{" "}
+                <span className="text-blue-500 font-medium">
+                  {sponsorDetails?.applicantPlacementLevel}
+                </span>
+              </span>
+            </div>
+
+
             <Controller
               name="applicantPlacementLevel"
               control={control}
