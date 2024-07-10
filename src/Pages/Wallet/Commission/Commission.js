@@ -5,7 +5,6 @@ import axios from "axios";
 import { BaseUrl } from "../../../request/URL";
 import Dropdown from "../../../components/Helpers/CustomDropDown";
 import Spinners from "../../../components/placeholders/Spinners";
- 
 
 export default function Commission() {
   const [members, setMembers] = useState([]);
@@ -28,16 +27,13 @@ export default function Commission() {
   const fetchSectionData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${BaseUrl}/agent/all-tree-members/${treeName}`,
-        {
-          params: {
-            search: searchQuery,
-            page: currentPage,
-            limit: 9, // Adjust limit as needed
-          },
-        }
-      );
+      const response = await axios.get(`${BaseUrl}/agent//list?limit=10`, {
+        params: {
+          search: searchQuery,
+          page: currentPage,
+          limit: 9, // Adjust limit as needed
+        },
+      });
       setMembers(response.data.members);
       setTotalPages(response.data.totalPages);
       setError(null);
@@ -70,7 +66,7 @@ export default function Commission() {
         <div className="flex items-center justify-between space-x-5">
           <div className="flex lg:space-x-8 items-center">
             <span className="text-xl font-medium text-gray-700">
-            Commission
+              Commission
             </span>
 
             <div>
@@ -141,6 +137,8 @@ export default function Commission() {
                   <th className="p-2 font-bold text-left">Name</th>
                   <th className="p-2 font-bold text-left">Level</th>
                   <th className="p-2 font-bold text-left">Sponsor ID</th>
+                  <th className="p-2 font-bold text-left">Tree Name</th>
+                  <th className="p-2 font-bold text-left">Amount</th>
 
                   <th className="p-2 font-bold text-left">Action</th>
                 </tr>
@@ -162,12 +160,15 @@ export default function Commission() {
                         <td className="p-2 text-left">{member?.sponsorId}</td>
                       )}
 
+                      <td>{member?.treeName}</td>
+                      <td>Rs. {member?.walletBalance}</td>
+
                       <td className="p-2  text-left ">
                         <button
-                          className="text-blue-500 cursor-pointer"
+                          className="text-blue-500 cursor-pointer border px-3 border-blue-500 rounded-md"
                           onClick={() => navigate(`${member?.memberId}`)}
                         >
-                          
+                          Pay
                         </button>
                       </td>
                     </tr>

@@ -37,7 +37,6 @@ export default function RegisterTable() {
     }
   };
 
-   
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -99,6 +98,7 @@ export default function RegisterTable() {
                 <th className="p-2 font-bold text-left">Phone Number</th>
                 <th className="p-2 font-bold text-left">Date of Joining</th>
                 <th className="p-2 font-bold text-left">Sponsor ID</th>
+                <th className="p-2 font-bold text-left">Placement ID</th>
                 <th className="p-2 font-bold text-left">Payment</th>
                 <th className="p-2 font-bold text-left">Status</th>
                 <th className="p-2 font-bold text-left">Action</th>
@@ -115,14 +115,21 @@ export default function RegisterTable() {
                     <td className="p-2 text-left">{member?.memberId}</td>
                     <td className="p-2 text-left">{member?.name}</td>
                     <td className="p-2 text-left">{member?.phoneNumber}</td>
+
                     <td className="p-2 text-left">
                       {" "}
                       {moment(new Date(member?.createdAt)).format("DD-MM-YYYY")}
                     </td>
                     {member.isHead ? (
-                      <td className="p-2 text-left">Tree Head</td>
+                      <>
+                        <td className="p-2 text-left">Tree Head</td>
+                        <td className="p-2 text-left">Tree Head</td>
+                      </>
                     ) : (
-                      <td className="p-2 text-left">{member?.sponsorId}</td>
+                      <>
+                        <td className="p-2 text-left">{member?.sponsorId}</td>
+                        <td className="p-2 text-left">{member?.placementId}</td>
+                      </>
                     )}
                     <td className="p-2 text-left">{member?.joiningFee} Rs</td>
                     <td
@@ -142,6 +149,12 @@ export default function RegisterTable() {
                         <IoIosEye />
                       </button>
                     </td>
+
+                    {/* */}
+                    {/* <td className="p-2 text-left">
+                      {member?.referralCommission}
+                    </td> */}
+                    {/*  */}
                   </tr>
                 ))
               ) : (
@@ -156,11 +169,11 @@ export default function RegisterTable() {
         </div>
       </div>
       <div className="py-2">
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </>
   );

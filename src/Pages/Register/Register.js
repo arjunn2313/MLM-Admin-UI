@@ -62,6 +62,8 @@ export default function Register() {
     const sponsorId = searchParams.get("sponsorId");
     if (sponsorId) {
       setValue("sponsorId", sponsorId);
+      setValue("placementId", sponsorId);
+      fetchPlacementDetails(sponsorId)
       fetchSponsorDetails(sponsorId);
     }
   }, [searchParams, setValue]);
@@ -94,10 +96,13 @@ export default function Register() {
       "sponsorPlacementLevel",
       sponsorDetails?.applicantPlacementLevel
     );
+    formData.append("placementId", data?.placementId);
+    formData.append("placementName", placementDetails?.name);
     formData.append(
-      "applicantPlacementLevel",
-      sponsorDetails?.applicantPlacementLevel + 1
+      "placementPlacementLevel",
+      placementDetails?.applicantPlacementLevel
     );
+    formData.append("applicantPlacementLevel", data.applicantPlacementLevel);
     formData.append("joiningFee", data?.joiningFee);
     formData.append("applicantPhoto", applicantPhoto);
     formData.append("applicantSign", applicantSign);
@@ -128,6 +133,11 @@ export default function Register() {
   const [sponsorError, setSponsorError] = useState(null);
   const [phoneErrors, setPhoneErrors] = useState(null);
 
+  // State variables for placement details
+  const [placementDetails, setPlacementDetails] = useState(null);
+  const [loadingPlacement, setLoadingPlacement] = useState(false);
+  const [placementError, setPlacementError] = useState(null);
+
   // check phone
 
   const checkMobileNumber = async (phoneNumber) => {
@@ -153,19 +163,42 @@ export default function Register() {
           `${BaseUrl}/agent/sponsor-member/${sponsorId}`
         );
         setSponsorDetails(response.data);
-        setValue(
-          "applicantPlacementLevel",
-          response.data.applicantPlacementLevel + 1
-        );
+        // setValue(
+        //   "applicantPlacementLevel",
+        //   response.data.applicantPlacementLevel + 1
+        // );
         setSponsorError(null);
         console.log(response);
       } catch (error) {
         setSponsorDetails(null);
         setSponsorError(error?.response?.data?.error);
-        setValue("applicantPlacementLevel", "");
+        // setValue("applicantPlacementLevel", "");
         console.log(error);
       } finally {
         setLoadingSponsor(false);
+      }
+    }
+  };
+
+  // Function to fetch placement details
+  const fetchPlacementDetails = async (placementId) => {
+    if (placementId.length >= 4) {
+      setLoadingPlacement(true);
+      try {
+        const response = await axios.get(
+          `${BaseUrl}/agent/placement-member/${placementId}`
+        );
+        setPlacementDetails(response.data);
+        setValue("applicantPlacementLevel", response.data.nextPlacement);
+        setPlacementError(null);
+        console.log(response);
+      } catch (error) {
+        setPlacementDetails(null);
+        setPlacementError(error?.response?.data?.error);
+        setValue("applicantPlacementLevel", "");
+        console.log(error);
+      } finally {
+        setLoadingPlacement(false);
       }
     }
   };
@@ -449,7 +482,7 @@ export default function Register() {
                 />
               )}
             />
-            {/* sponor id */}
+            {/* sponor id old */}
             <Controller
               name="sponsorId"
               control={control}
@@ -477,7 +510,6 @@ export default function Register() {
                       <span>
                         <MdVerified />
                       </span>
-                      {/* Display other sponsor details as needed */}
                     </div>
                   )}
                 </div>
@@ -498,36 +530,34 @@ export default function Register() {
               </span>
             </div>
 
-            {/* placement Id */}
- 
+            {/* placement id */}
             <Controller
-              name="sponsorId"
+              name="placementId"
               control={control}
-              rules={{ required: "Sponsor ID is required" }}
+              rules={{ required: "Placement ID is required" }}
               render={({ field }) => (
                 <div>
                   <Input
                     label="Placement ID"
-                    placeholder="Enter sponsor ID"
-                    error={errors.sponsorId}
+                    placeholder="Enter Placement ID"
+                    error={errors.placementId}
                     {...field}
                     onChange={(e) => {
                       const { value } = e.target;
                       field.onChange(value);
-                      fetchSponsorDetails(value);
+                      fetchPlacementDetails(value);
                     }}
                   />
-                  {loadingSponsor && <p>Loading sponsor details...</p>}
-                  {sponsorError && (
-                    <p className="text-red-500">* {sponsorError}</p>
+                  {loadingPlacement && <p>Loading placement details...</p>}
+                  {placementError && (
+                    <p className="text-red-500">* {placementError}</p>
                   )}
-                  {sponsorDetails && (
+                  {placementDetails && (
                     <div className="flex items-center gap-2 text-green-700  font-medium">
                       <p>Verified </p>{" "}
                       <span>
                         <MdVerified />
                       </span>
-                      {/* Display other sponsor details as needed */}
                     </div>
                   )}
                 </div>
@@ -535,19 +565,18 @@ export default function Register() {
             />
             <div className="flex items-end  justify-around  ">
               <span>
-              Placement Member Name : :{" "}
+                Placement Member Name :{" "}
                 <span className="text-blue-500 font-medium">
-                  {sponsorDetails?.name}
+                  {placementDetails?.name}
                 </span>
               </span>
               <span>
-              Placement Member Level :{" "}
+                Placement Member Level :{" "}
                 <span className="text-blue-500 font-medium">
-                  {sponsorDetails?.applicantPlacementLevel}
+                  {placementDetails?.applicantPlacementLevel}
                 </span>
               </span>
             </div>
-
 
             <Controller
               name="applicantPlacementLevel"

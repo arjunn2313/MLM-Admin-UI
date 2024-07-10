@@ -17,7 +17,7 @@ export default function Member() {
   const [selectedCategory, setSelectedCategory] = useState();
   const navigate = useNavigate();
 
-  const treeName = "Arjun"
+  const treeName = "Arjun";
 
   const categories = ["fdsv", "CSsc", "cssc"];
 
@@ -28,16 +28,13 @@ export default function Member() {
   const fetchSectionData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${BaseUrl}/agent/all-tree-members/${treeName}`,
-        {
-          params: {
-            search: searchQuery,
-            page: currentPage,
-            limit: 9, // Adjust limit as needed
-          },
-        }
-      );
+      const response = await axios.get(`${BaseUrl}/agent/list?limit=10`, {
+        params: {
+          search: searchQuery,
+          page: currentPage,
+          limit: 9, // Adjust limit as needed
+        },
+      });
       setMembers(response.data.members);
       setTotalPages(response.data.totalPages);
       setError(null);
@@ -141,6 +138,7 @@ export default function Member() {
                   <th className="p-2 font-bold text-left">Name</th>
                   <th className="p-2 font-bold text-left">Level</th>
                   <th className="p-2 font-bold text-left">Sponsor ID</th>
+                  <th className="p-2 font-bold text-left">Placement ID</th>
 
                   <th className="p-2 font-bold text-left">Action</th>
                 </tr>
@@ -157,9 +155,17 @@ export default function Member() {
                       <td className="p-2 text-left">{member?.name}</td>
                       <td className="p-2 text-left">{member?.level}</td>
                       {member?.isHead ? (
-                        <td className="p-2 text-left">Head</td>
+                        <>
+                          <td className="p-2 text-left">Head</td>
+                          <td className="p-2 text-left">Head</td>
+                        </>
                       ) : (
-                        <td className="p-2 text-left">{member?.sponsorId}</td>
+                        <>
+                          <td className="p-2 text-left">{member?.sponsorId}</td>
+                          <td className="p-2 text-left">
+                            {member?.placementId}
+                          </td>
+                        </>
                       )}
 
                       <td className="p-2  text-left ">
