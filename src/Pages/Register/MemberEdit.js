@@ -55,30 +55,30 @@ export default function UpdateMember() {
     }
   };
 
-  const onSubmit = (data) => {
-    try {
-      // Retrieve existing formData from localStorage
-      const storedData = localStorage.getItem("formData");
+  // const onSubmit = (data) => {
+  //   try {
+  //     // Retrieve existing formData from localStorage
+  //     const storedData = localStorage.getItem("formData");
 
-      let updatedData;
+  //     let updatedData;
 
-      if (storedData) {
-        const existingData = JSON.parse(storedData);
-        // Merge existing data with new data
-        updatedData = { ...existingData, ...data };
-      } else {
-        updatedData = data;
-      }
+  //     if (storedData) {
+  //       const existingData = JSON.parse(storedData);
+  //       // Merge existing data with new data
+  //       updatedData = { ...existingData, ...data };
+  //     } else {
+  //       updatedData = data;
+  //     }
 
-      // Save updated data back to localStorage
-      localStorage.setItem("formData", JSON.stringify(updatedData));
+  //     // Save updated data back to localStorage
+  //     localStorage.setItem("formData", JSON.stringify(updatedData));
 
-      // Navigate to the next page
-      navigate("/register/form/terms-and-condition/preview");
-    } catch (error) {
-      console.log("Error saving form data to localStorage:", error);
-    }
-  };
+  //     // Navigate to the next page
+  //     navigate("/register/form/terms-and-condition/preview");
+  //   } catch (error) {
+  //     console.log("Error saving form data to localStorage:", error);
+  //   }
+  // };
 
   // const onSubmit = async (data) => {
   //   const formData = new FormData();
@@ -133,6 +133,17 @@ export default function UpdateMember() {
   //     console.log(error);
   //   }
   // };
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await axios.put(`${BaseUrl}/agent/agent-update/${memberId}`, data);
+      console.log(res);
+      alert("Update completed");
+      navigate(-1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleBack = () => {
     setShowPreview(false);
@@ -320,19 +331,7 @@ export default function UpdateMember() {
               </div>
             )}
           /> */}
-          <Controller
-            name="phoneNumber"
-            control={control}
-            rules={{ required: "Phone number is required" }}
-            render={({ field }) => (
-              <Input
-                label="Phone Number"
-                placeholder="Enter phone number"
-                error={errors.phoneNumber}
-                {...field}
-              />
-            )}
-          />
+
           <Controller
             name="dob"
             control={control}

@@ -166,20 +166,16 @@ export default function MemberPreview() {
               {formData?.isHead === false && (
                 <div className="grid grid-cols-2  ">
                   <label className="font-medium">Sponsor ID</label>
-                  <p className="capitalize  text-gray-900">
+                  <p className="capitalize mb-2 text-gray-900">
                     {formData?.sponsorId}
                   </p>
 
-                  <label className="font-medium">Sponsor ID</label>
+                  <label className="font-medium">Placement ID</label>
                   <p className="capitalize  text-gray-900">
-                    {formData?.sponsorId}
+                    {formData?.placementId}
                   </p>
                 </div>
               )}
-
-            
-
-              
 
               {/* {formData?.status === "Un Approved" && ( */}
               {formData?.isPayed ? null : (
