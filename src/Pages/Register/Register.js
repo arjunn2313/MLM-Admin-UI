@@ -71,6 +71,18 @@ export default function Register() {
   };
 
   useEffect(() => {
+    axios
+      .get(`${BaseUrl}/settings`)
+      .then((res) => {
+        console.log(res);
+        setValue("joiningFee", res.data.referralCommission);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
     const sponsorId = searchParams.get("sponsorId");
     if (sponsorId) {
       setValue("sponsorId", sponsorId);
@@ -745,7 +757,7 @@ export default function Register() {
               )}
             />
             <div></div>
-            <Controller
+            {/* <Controller
               name="joiningFee"
               control={control}
               rules={{ required: "Joining fee is required" }}
@@ -755,6 +767,20 @@ export default function Register() {
                   label="Joining Fee"
                   error={errors.joiningFee}
                   {...field}
+                />
+              )}
+            /> */}
+            <Controller
+              name="joiningFee"
+              control={control}
+              // rules={{ required: "Nominee name is required" }}
+              render={({ field }) => (
+                <Input
+                  label="Joining Fee"
+                  // placeholder="Enter nominee name"
+                  error={errors.joiningFee}
+                  {...field}
+                  disabled={true}
                 />
               )}
             />
