@@ -29,6 +29,9 @@ import Commission from "./Pages/Wallet/Commission/Commission";
 import Referal from "./Pages/Wallet/Referal/Referal";
 import Settings from "./Pages/Wallet/Settings/Settings";
 import CashDebit from "./components/payout";
+import TermsAndCondition from "./Pages/Register/Terms&Condition";
+import MemberPreview from "./Pages/Register/memberPreview";
+import HeadTerms from "./Pages/Tree/HeadTerms";
 
 // Define Layout component to avoid repetition
 const Layout = ({ children }) => (
@@ -83,8 +86,20 @@ const router = createHashRouter([
         element: <Register />,
       },
       {
-        path: "preview/:memberId",
+        path: "form/terms-and-condition",
+        element: <TermsAndCondition />,
+      },
+      {
+        path: "form/terms-and-condition/preview",
         element: <Preview />,
+      },
+      {
+        path: "form/terms-and-condition/update",
+        element: <UpdateMember />,
+      },
+      {
+        path: "preview/:memberId",
+        element: <MemberPreview />,
       },
       {
         path: "update/:memberId",
@@ -113,8 +128,48 @@ const router = createHashRouter([
         element: <TreeForm />,
       },
       {
+        path: "district/:name/:districtId/new-tree/terms-and-condition",
+        element: <HeadTerms />,
+      },
+      {
         path: "district/:name/:districtId/tree/:treeId/:headId/:treeName",
         element: <TreeTabContainer />,
+      },
+    ],
+  },
+  {
+    path: "/incomplete-tree",
+    element: (
+      <Layout>
+        <Outlet />
+      </Layout>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Member />,
+      },
+      {
+        path: ":id/tree-view",
+        element: <MemberDashboard />,
+      },
+    ],
+  },
+  {
+    path: "/completed-tree",
+    element: (
+      <Layout>
+        <Outlet />
+      </Layout>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Member />,
+      },
+      {
+        path: ":id/tree-view",
+        element: <MemberDashboard />,
       },
     ],
   },

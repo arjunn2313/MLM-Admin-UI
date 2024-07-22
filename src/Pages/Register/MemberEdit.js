@@ -15,7 +15,7 @@ const MaterialStatus = ["Single", "Married", "Other"];
 const JoiningFee = [2500, 3000, 3500];
 
 export default function UpdateMember() {
-  const { memberId } = useParams(); // Assuming you're using React Router for routing
+  const { memberId } = useParams();
   const {
     control,
     handleSubmit,
@@ -55,59 +55,84 @@ export default function UpdateMember() {
     }
   };
 
-  const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append("name", data?.name);
-    formData.append("parentName", data?.parentInfo?.name);
-    formData.append("relation", data?.parentInfo?.relation);
-    formData.append("phoneNumber", data?.phoneNumber);
-    formData.append("dateOfBirth", data?.dob);
-    formData.append("gender", data?.gender);
-    formData.append("maritalStatus", data?.maritalStatus);
-    formData.append("panNumber", data?.panNumber);
-    formData.append("accountNumber", data?.accountNumber);
-    formData.append("ifscCode", data?.ifscCode);
-    formData.append("bankName", data?.bankName);
-    formData.append("address", data?.address);
-    formData.append("city", data?.city);
-    formData.append("district", data?.district);
-    formData.append("state", data?.state);
-    formData.append("country", data?.country);
-    formData.append("zipCode", data?.zipCode);
-    formData.append("nameOfNominee", data?.nomineeName);
-    formData.append("relationshipWithNominee", data?.relationshipWithNominee);
-    formData.append("sponsorId", data?.sponsorId);
-    formData.append("sponsorName", sponsorDetails?.name);
-    formData.append(
-      "sponsorPlacementLevel",
-      sponsorDetails?.sponsorPlacementLevel
-    );
-    formData.append(
-      "applicantPlacementLevel",
-      sponsorDetails?.sponsorPlacementLevel + 1
-    );
-    formData.append("joiningFee", data?.joiningFee);
-    if (applicantPhoto) formData.append("applicantPhoto", applicantPhoto);
-    if (applicantSign) formData.append("applicantSign", applicantSign);
-    if (sponsorSign) formData.append("sponsorSign", sponsorSign);
-
+  const onSubmit = (data) => {
     try {
-      const res = await axios.put(
-        `${BaseUrl}/member/update/${memberId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(res);
-      alert("Update completed");
-      navigate(-1);
+      // Retrieve existing formData from localStorage
+      const storedData = localStorage.getItem("formData");
+
+      let updatedData;
+
+      if (storedData) {
+        const existingData = JSON.parse(storedData);
+        // Merge existing data with new data
+        updatedData = { ...existingData, ...data };
+      } else {
+        updatedData = data;
+      }
+
+      // Save updated data back to localStorage
+      localStorage.setItem("formData", JSON.stringify(updatedData));
+
+      // Navigate to the next page
+      navigate("/register/form/terms-and-condition/preview");
     } catch (error) {
-      console.log(error);
+      console.log("Error saving form data to localStorage:", error);
     }
   };
+
+  // const onSubmit = async (data) => {
+  //   const formData = new FormData();
+  //   formData.append("name", data?.name);
+  //   formData.append("parentName", data?.parentInfo?.name);
+  //   formData.append("relation", data?.parentInfo?.relation);
+  //   formData.append("phoneNumber", data?.phoneNumber);
+  //   formData.append("dateOfBirth", data?.dob);
+  //   formData.append("gender", data?.gender);
+  //   formData.append("maritalStatus", data?.maritalStatus);
+  //   formData.append("panNumber", data?.panNumber);
+  //   formData.append("accountNumber", data?.accountNumber);
+  //   formData.append("ifscCode", data?.ifscCode);
+  //   formData.append("bankName", data?.bankName);
+  //   formData.append("address", data?.address);
+  //   formData.append("city", data?.city);
+  //   formData.append("district", data?.district);
+  //   formData.append("state", data?.state);
+  //   formData.append("country", data?.country);
+  //   formData.append("zipCode", data?.zipCode);
+  //   formData.append("nameOfNominee", data?.nomineeName);
+  //   formData.append("relationshipWithNominee", data?.relationshipWithNominee);
+  //   formData.append("sponsorId", data?.sponsorId);
+  //   formData.append("sponsorName", sponsorDetails?.name);
+  //   formData.append(
+  //     "sponsorPlacementLevel",
+  //     sponsorDetails?.sponsorPlacementLevel
+  //   );
+  //   formData.append(
+  //     "applicantPlacementLevel",
+  //     sponsorDetails?.sponsorPlacementLevel + 1
+  //   );
+  //   formData.append("joiningFee", data?.joiningFee);
+  //   if (applicantPhoto) formData.append("applicantPhoto", applicantPhoto);
+  //   if (applicantSign) formData.append("applicantSign", applicantSign);
+  //   if (sponsorSign) formData.append("sponsorSign", sponsorSign);
+
+  //   try {
+  //     const res = await axios.put(
+  //       `${BaseUrl}/member/update/${memberId}`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+  //     console.log(res);
+  //     alert("Update completed");
+  //     navigate(-1);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleBack = () => {
     setShowPreview(false);
@@ -145,20 +170,69 @@ export default function UpdateMember() {
   };
 
   // Fetch existing member data when the component mounts
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${BaseUrl}/member/member-preview/${memberId}`
+  //       );
+  //       const data = response.data;
+
+  //       // Populate form fields with the fetched data
+  //       setValue("name", data.name);
+  //       setValue("parentInfo", {
+  //         name: data.parentName,
+  //         relation: data.relation,
+  //       });
+  //       setValue("phoneNumber", data.phoneNumber);
+  //       setValue(
+  //         "dob",
+  //         moment(new Date(data?.dateOfBirth)).format("DD-MM-YYYY")
+  //       );
+  //       setValue("gender", data.gender);
+  //       setValue("maritalStatus", data.maritalStatus);
+  //       setValue("panNumber", data.panNumber);
+  //       setValue("accountNumber", data.accountNumber);
+  //       setValue("ifscCode", data.ifscCode);
+  //       setValue("bankName", data.bankName);
+  //       setValue("address", data.address);
+  //       setValue("city", data.city);
+  //       setValue("district", data.district);
+  //       setValue("state", data.state);
+  //       setValue("country", data.country);
+  //       setValue("zipCode", data.zipCode);
+  //       setValue("nomineeName", data.nameOfNominee);
+  //       setValue("relationshipWithNominee", data.relationshipWithNominee);
+  //       setValue("sponsorId", data.sponsorId);
+  //       setValue("joiningFee", data.joiningFee);
+  //       setSponsorDetails({
+  //         name: data.sponsorName,
+  //         sponsorPlacementLevel: data.sponsorPlacementLevel,
+  //       });
+  //       setApplicantPhoto(data.applicantPhoto);
+  //       setApplicantSign(data.applicantSign);
+  //       setSponsorSign(data.sponsorSign);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [memberId, setValue]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${BaseUrl}/member/member-preview/${memberId}`
-        );
-        const data = response.data;
+    try {
+      const storedData = localStorage.getItem("formData");
+
+      if (storedData) {
+        const data = JSON.parse(storedData);
 
         // Populate form fields with the fetched data
         setValue("name", data.name);
-        setValue("parentInfo", {
-          name: data.parentName,
-          relation: data.relation,
-        });
+        // setValue("parentInfo", {
+        //   name: data.name,
+        //   relation: data.relation,
+        // });
         setValue("phoneNumber", data.phoneNumber);
         setValue(
           "dob",
@@ -187,13 +261,11 @@ export default function UpdateMember() {
         setApplicantPhoto(data.applicantPhoto);
         setApplicantSign(data.applicantSign);
         setSponsorSign(data.sponsorSign);
-      } catch (error) {
-        console.log(error);
       }
-    };
-
-    fetchData();
-  }, [memberId, setValue]);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [setValue]);
 
   return (
     <>

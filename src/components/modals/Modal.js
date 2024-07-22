@@ -1,7 +1,7 @@
 import React from "react";
 import { IoIosClose } from "react-icons/io";
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const CustomModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -26,4 +26,4 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   );
 };
 
-export default Modal;
+export default CustomModal;

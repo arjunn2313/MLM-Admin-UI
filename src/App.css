@@ -3,7 +3,6 @@
   padding: 0;
   box-sizing: border-box;
 }
- 
 
 a {
   text-decoration: none;
@@ -57,3 +56,20 @@ a {
   font-family: "Roboto", sans-serif;
 }
 
+.PhoneInput input {
+  border: 0;
+  outline: none;
+}
+
+.PhoneInput input:focus {
+  box-shadow: none;
+}
+
+/* .PhoneInput {
+  border: 1px solid gray;
+  outline: none;
+} */
+
+.PhoneInput:focus-within {
+  box-shadow: 0 0 0 2px rgb(59, 131, 246);
+}

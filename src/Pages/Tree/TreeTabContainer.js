@@ -10,6 +10,8 @@ import Tree from "./Tree";
 import SponsorContainer from "./sponsors/SponsorContainer";
 import DownlineContainer from "./Downline/downlineContainer";
 import MemberContainer from "./Member/MemberContainer";
+import IncompletContainer from "./Incomplete/IncompletContainer";
+import CompletedContainer from "./Completed/CompletedContainer";
 
 export default function TreeTabContainer() {
   const navigate = useNavigate();
@@ -17,7 +19,6 @@ export default function TreeTabContainer() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedTab = searchParams.get("tab") || "TreeView";
-  
 
   const handleTabChange = (tab) => {
     setSearchParams({ tab });
@@ -33,6 +34,11 @@ export default function TreeTabContainer() {
         return <DownlineContainer />;
       case "MemberList":
         return <MemberContainer />;
+
+      case "CompletedList":
+        return <CompletedContainer />;
+      case "IncompleteList":
+        return <IncompletContainer />;
 
       default:
         return null;
@@ -95,6 +101,28 @@ export default function TreeTabContainer() {
           >
             Member List
           </li>
+
+          <li
+            className={`p-4 cursor-pointer${
+              selectedTab === "IncompleteList"
+                ? " text-blue-500 border-b-2 border-blue-500"
+                : ""
+            }`}
+            onClick={() => handleTabChange("IncompleteList")}
+          >
+            Incomplete Trees
+          </li>
+
+          <li
+            className={`p-4 cursor-pointer${
+              selectedTab === "CompletedList"
+                ? " text-blue-500 border-b-2 border-blue-500"
+                : ""
+            }`}
+            onClick={() => handleTabChange("CompletedList")}
+          >
+            Completed Trees
+          </li>
         </ul>
       </div>
 
@@ -103,5 +131,3 @@ export default function TreeTabContainer() {
     </div>
   );
 }
-
- 

@@ -9,7 +9,9 @@ export default function SelectGroup({
   error,
   options,
 }) {
-  const [selectValue, setSelectValue] = React.useState(value.relation || options[0]);
+  const [selectValue, setSelectValue] = React.useState(
+    value.relation || options[0]
+  );
   const [inputValue, setInputValue] = React.useState(value.name || "");
 
   const handleSelectChange = (e) => {
@@ -27,20 +29,26 @@ export default function SelectGroup({
   return (
     <div>
       <label className="block mb-3 font-medium">{label}</label>
-      <div className="flex items-center border border-gray-600 rounded-md overflow-hidden">
+      <div
+        className={`flex items-center border ${
+          error ? "border-red-600" : "border-gray-600"
+        }  rounded-md overflow-hidden`}
+      >
         <select
-          className="h-full bg-gray-100 px-4 py-2 text-gray-700 focus:outline-none border-none"
+          className="h-full bg-gray-100 px-4 py-2  focus:outline-none border-none"
           value={selectValue}
           onChange={handleSelectChange}
           onBlur={onBlur}
         >
           {options?.map((option, index) => (
-            <option key={index} value={option}>{option}</option>
+            <option key={index} value={option}>
+              {option}
+            </option>
           ))}
         </select>
         <input
           type="text"
-          className={`flex-1 px-4 py-2 text-gray-700 focus:outline-none ${
+          className={`flex-1 px-4 py-2  border-none focus:outline-none ${
             error ? "border-red-600" : ""
           }`}
           placeholder={placeholder}

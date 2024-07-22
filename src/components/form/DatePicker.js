@@ -1,6 +1,9 @@
 import React from "react";
 
 export default function Date({ label, type, value, onChange, onBlur, error }) {
+  
+  // const today = new Date().toISOString().split('T')[0];
+  
   return (
     <div className="mb-4 w-full">
       <label className="block mb-3 font-medium">{label}</label>

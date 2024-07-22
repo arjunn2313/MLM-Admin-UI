@@ -10,6 +10,18 @@ import axios from "axios";
 import { BaseUrl } from "../../request/URL";
 import { MdVerified } from "react-icons/md";
 import RegPreview from "../../components/form/RegPreview";
+import { PhoneNumber } from "../../components/form/PhoneNumber";
+import {
+  validateAadharNumber,
+  validateAccountNumber,
+  validateDOB,
+  validateFile,
+  validateIFSC,
+  validatePAN,
+  validatePhoneNumber,
+  validateZipCode,
+} from "../../components/form/CustomValidations";
+import FileInput from "../../components/form/FileInput";
 
 const GenderData = ["Male", "Female", "Other"];
 const MaterialStatus = ["Single", "Married", "Other"];
@@ -23,7 +35,7 @@ export default function Register() {
     setValue,
   } = useForm();
 
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const alpicantRef = useRef(null);
@@ -63,65 +75,97 @@ export default function Register() {
     if (sponsorId) {
       setValue("sponsorId", sponsorId);
       setValue("placementId", sponsorId);
-      fetchPlacementDetails(sponsorId)
+      fetchPlacementDetails(sponsorId);
       fetchSponsorDetails(sponsorId);
     }
   }, [searchParams, setValue]);
 
-  const onSubmit = async (data) => {
-    console.log(data);
-    const formData = new FormData();
-    formData.append("name", data?.name);
-    formData.append("parentName", data?.parentInfo?.name);
-    formData.append("relation", data?.parentInfo?.relation);
-    formData.append("phoneNumber", data?.phoneNumber);
-    formData.append("dateOfBirth", data?.dob);
-    formData.append("gender", data?.gender);
-    formData.append("maritalStatus", data?.maritalStatus);
-    formData.append("panNumber", data?.panNumber);
-    formData.append("accountNumber", data?.accountNumber);
-    formData.append("ifscCode", data?.ifscCode);
-    formData.append("bankName", data?.bankName);
-    formData.append("address", data?.address);
-    formData.append("city", data?.city);
-    formData.append("district", data?.district);
-    formData.append("state", data?.state);
-    formData.append("country", data?.country);
-    formData.append("zipCode", data?.zipCode);
-    formData.append("nameOfNominee", data?.nomineeName);
-    formData.append("relationshipWithNominee", data?.relationshipWithNominee);
-    formData.append("sponsorId", data?.sponsorId);
-    formData.append("sponsorName", sponsorDetails?.name);
-    formData.append(
-      "sponsorPlacementLevel",
-      sponsorDetails?.applicantPlacementLevel
-    );
-    formData.append("placementId", data?.placementId);
-    formData.append("placementName", placementDetails?.name);
-    formData.append(
-      "placementPlacementLevel",
-      placementDetails?.applicantPlacementLevel
-    );
-    formData.append("applicantPlacementLevel", data.applicantPlacementLevel);
-    formData.append("joiningFee", data?.joiningFee);
-    formData.append("applicantPhoto", applicantPhoto);
-    formData.append("applicantSign", applicantSign);
-    formData.append("sponsorSign", sponsorSign);
-
-    try {
-      const res = await axios.post(`${BaseUrl}/agent/register`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log(res);
-      alert("Registration completed");
-      setShowPreview(true);
-      setFormData(res.data.data);
-    } catch (error) {
-      setSubmitError(error.response.data.error);
-    }
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
   };
+  const onSubmit = async (data) => {
+    // Convert files to base64 and store them in localStorage
+    const applicantPhotoBase64 = await fileToBase64(data.applicantPhoto[0]);
+
+    const plainObject = {
+      ...data,
+      sponsorName: sponsorDetails?.name,
+      sponsorPlacementLevel: sponsorDetails?.applicantPlacementLevel,
+      placementName: placementDetails?.name,
+      placementPlacementLevel: placementDetails?.applicantPlacementLevel,
+      applicantPhoto: applicantPhotoBase64,
+    };
+
+    console.log(plainObject);
+
+    await localStorage.setItem("formData", JSON.stringify(plainObject));
+    navigate("terms-and-condition");
+  };
+
+  // const onSubmit = async (data) => {
+  //   console.log(data);
+  //   const formData = new FormData();
+  //   formData.append("name", data?.name);
+  //   formData.append("parentName", data?.parentInfo?.name);
+  //   formData.append("relation", data?.parentInfo?.relation);
+  //   formData.append("phoneNumber", data?.phoneNumber);
+  //   formData.append("dateOfBirth", data?.dob);
+  //   formData.append("gender", data?.gender);
+  //   formData.append("maritalStatus", data?.maritalStatus);
+  //   formData.append("panNumber", data?.panNumber);
+  //   formData.append("accountNumber", data?.accountNumber);
+  //   formData.append("ifscCode", data?.ifscCode);
+  //   formData.append("bankName", data?.bankName);
+  //   formData.append("address", data?.address);
+  //   formData.append("city", data?.city);
+  //   formData.append("district", data?.district);
+  //   formData.append("state", data?.state);
+  //   formData.append("country", data?.country);
+  //   formData.append("zipCode", data?.zipCode);
+  //   formData.append("nameOfNominee", data?.nomineeName);
+  //   formData.append("relationshipWithNominee", data?.relationshipWithNominee);
+  //   formData.append("sponsorId", data?.sponsorId);
+  //   formData.append("sponsorName", sponsorDetails?.name);
+  //   formData.append(
+  //     "sponsorPlacementLevel",
+  //     sponsorDetails?.applicantPlacementLevel
+  //   );
+  //   formData.append("placementId", data?.placementId);
+  //   formData.append("placementName", placementDetails?.name);
+  //   formData.append(
+  //     "placementPlacementLevel",
+  //     placementDetails?.applicantPlacementLevel
+  //   );
+  //   formData.append("applicantPlacementLevel", data.applicantPlacementLevel);
+  //   formData.append("joiningFee", data?.joiningFee);
+  //   formData.append("applicantPhoto", applicantPhoto);
+  //   formData.append("applicantSign", applicantSign);
+  //   formData.append("sponsorSign", sponsorSign);
+
+  //   const plainObject = {};
+  //   formData.forEach((value, key) => {
+  //     plainObject[key] = value;
+  //   });
+
+  //   try {
+  //     const res = await axios.post(`${BaseUrl}/agent/register`, formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+  //     console.log(res);
+  //     alert("Registration completed");
+  //     setShowPreview(true);
+  //     setFormData(res.data.data);
+  //   } catch (error) {
+  //     setSubmitError(error.response.data.error);
+  //   }
+  // };
 
   const handleBack = () => {
     setShowPreview(false);
@@ -139,9 +183,8 @@ export default function Register() {
   const [placementError, setPlacementError] = useState(null);
 
   // check phone
-
   const checkMobileNumber = async (phoneNumber) => {
-    if (phoneNumber.length >= 10) {
+    if (phoneNumber && phoneNumber.length >= 10) {
       try {
         const response = await axios.get(
           `${BaseUrl}/agent/check-phone/${phoneNumber}`
@@ -248,7 +291,7 @@ export default function Register() {
               )}
             />
 
-            <Controller
+            {/* <Controller
               name="phoneNumber"
               control={control}
               rules={{
@@ -285,18 +328,82 @@ export default function Register() {
                   )}
                 </div>
               )}
+            /> */}
+
+            <Controller
+              name="phoneNumber"
+              control={control}
+              rules={{
+                required: "Phone number is required",
+                validate: validatePhoneNumber,
+              }}
+              render={({ field }) => (
+                <div>
+                  <PhoneNumber
+                    label="Phone Number"
+                    defaultCountry="IN"
+                    placeholder="Enter phone number"
+                    value={field.value || ""}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      checkMobileNumber(value);
+                    }}
+                    error={errors.phoneNumber}
+                  />
+                  {phoneErrors && (
+                    <span className="text-red-500">* {phoneErrors}</span>
+                  )}
+                </div>
+              )}
             />
 
             <Controller
-              name="dob"
+              name="whatsAppNumber"
               control={control}
-              rules={{ required: "Date of birth is required" }}
+              rules={{
+                required: "What's App number is required",
+                validate: validatePhoneNumber,
+              }}
+              render={({ field }) => (
+                <PhoneNumber
+                  label="Whatsapp Number"
+                  defaultCountry="IN"
+                  placeholder="Enter  whats app number"
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={errors.whatsAppNumber}
+                />
+              )}
+            />
+
+            <Controller
+              name="occupation"
+              control={control}
+              rules={{ required: "Occupation  is required" }}
+              render={({ field }) => (
+                <Input
+                  label="Occupation "
+                  placeholder="Enter Occupation "
+                  error={errors.occupation}
+                  {...field}
+                />
+              )}
+            />
+
+            <Controller
+              name="dateOfBirth"
+              control={control}
+              rules={{
+                required: "Date of birth is required",
+                // validate: validateDOB,
+              }}
               render={({ field }) => (
                 <Date
                   label="Date Of Birth"
                   type="date"
-                  error={errors.dob}
-                  {...field}
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  error={errors.dateOfBirth}
                 />
               )}
             />
@@ -329,7 +436,10 @@ export default function Register() {
             <Controller
               name="panNumber"
               control={control}
-              rules={{ required: "PAN number is required" }}
+              rules={{
+                required: "PAN number is required",
+                validate: validatePAN,
+              }}
               render={({ field }) => (
                 <Input
                   label="Pan Number"
@@ -342,7 +452,10 @@ export default function Register() {
             <Controller
               name="accountNumber"
               control={control}
-              rules={{ required: "Account number is required" }}
+              rules={{
+                required: "Account number is required",
+                validate: validateAccountNumber,
+              }}
               render={({ field }) => (
                 <Input
                   label="Account Number"
@@ -355,7 +468,10 @@ export default function Register() {
             <Controller
               name="ifscCode"
               control={control}
-              rules={{ required: "IFSC code is required" }}
+              rules={{
+                required: "IFSC code is required",
+                validate: validateIFSC,
+              }}
               render={({ field }) => (
                 <Input
                   label="IFSC Code"
@@ -378,6 +494,38 @@ export default function Register() {
                 />
               )}
             />
+
+            <Controller
+              name="branchName"
+              control={control}
+              rules={{ required: "Branch Name is required" }}
+              render={({ field }) => (
+                <Input
+                  label="Branch Name"
+                  placeholder="Enter Branch Name"
+                  error={errors.branchName}
+                  {...field}
+                />
+              )}
+            />
+
+            <Controller
+              name="aadharNumber"
+              control={control}
+              rules={{
+                required: "Aadhar Number is required",
+                validate: validateAadharNumber,
+              }}
+              render={({ field }) => (
+                <Input
+                  label="Aadhar Number"
+                  placeholder="Enter Aadhar Number"
+                  error={errors.aadharNumber}
+                  {...field}
+                />
+              )}
+            />
+
             <Controller
               name="address"
               control={control}
@@ -446,7 +594,10 @@ export default function Register() {
             <Controller
               name="zipCode"
               control={control}
-              rules={{ required: "Zip code is required" }}
+              rules={{
+                required: "Zip code is required",
+                validate: validateZipCode,
+              }}
               render={({ field }) => (
                 <Input
                   label="Zip Code"
@@ -457,14 +608,14 @@ export default function Register() {
               )}
             />
             <Controller
-              name="nomineeName"
+              name="nameOfNominee"
               control={control}
               rules={{ required: "Nominee name is required" }}
               render={({ field }) => (
                 <Input
                   label="Name of the Nominee"
                   placeholder="Enter nominee name"
-                  error={errors.nomineeName}
+                  error={errors.nameOfNominee}
                   {...field}
                 />
               )}
@@ -515,7 +666,7 @@ export default function Register() {
                 </div>
               )}
             />
-            <div className="flex items-end  justify-around  ">
+            <div className="flex items-center  justify-around  ">
               <span>
                 Sponsor Name :{" "}
                 <span className="text-blue-500 font-medium">
@@ -563,7 +714,7 @@ export default function Register() {
                 </div>
               )}
             />
-            <div className="flex items-end  justify-around  ">
+            <div className="flex items-center  justify-around  ">
               <span>
                 Placement Member Name :{" "}
                 <span className="text-blue-500 font-medium">
@@ -607,7 +758,23 @@ export default function Register() {
                 />
               )}
             />
-            <div>
+
+            <Controller
+              name="applicantPhoto"
+              control={control}
+              rules={{ validate: validateFile }}
+              render={({ field }) => (
+                <FileInput
+                  label="Applicant Photo"
+                  id="applicantPhoto"
+                  error={errors.applicantPhoto}
+                  onChange={(e) => field.onChange(e.target.files)}
+                  uploaded={field.value && field.value.length > 0}
+                />
+              )}
+            />
+
+            {/* <div>
               <label className="block mb-3 font-medium">Applicant Photo</label>
               <div
                 className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
@@ -623,8 +790,8 @@ export default function Register() {
                 className="hidden"
                 onChange={(e) => handleFileChange("applicantPhoto", e)}
               />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <label className="block mb-3 font-medium">Applicant Sign</label>
               <div
                 className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
@@ -640,8 +807,8 @@ export default function Register() {
                 className="hidden"
                 onChange={(e) => handleFileChange("applicantSign", e)}
               />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <label className="block mb-3 font-medium">Sponsor Sign</label>
               <div
                 className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
@@ -657,7 +824,7 @@ export default function Register() {
                 className="hidden"
                 onChange={(e) => handleFileChange("sponsorSign", e)}
               />
-            </div>
+            </div> */}
 
             {submitError && <p>{submitError}</p>}
             <div className="col-span-1 md:col-span-2 flex justify-end mt-4 space-x-6">

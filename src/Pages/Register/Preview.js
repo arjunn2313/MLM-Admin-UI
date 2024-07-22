@@ -9,47 +9,57 @@ import { BaseUrl, ImgUrl } from "../../request/URL";
 import moment from "moment";
 import Spinners from "../../components/placeholders/Spinners";
 
+const convertBase64Image = (base64, outputFormat = "image/jpeg") => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const dataURL = canvas.toDataURL(outputFormat);
+      resolve(dataURL);
+    };
+    img.onerror = (error) => reject(error);
+    img.src = base64;
+  });
+};
+
 export default function Preview() {
   const [formData, setFormData] = useState();
   const { memberId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [convertedImg, setConvertedImg] = useState(null);
 
   useEffect(() => {
-    fetchAgentData();
+    // fetchAgentData();
+    const data = localStorage.getItem("formData");
+    if (data) {
+      const parsedData = JSON.parse(data);
+      setFormData({ ...parsedData, status: "Approved" });
+    }
+    setLoading(false);
   }, []);
 
-  const fetchAgentData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await axios.get(`${BaseUrl}/agent/agent-preview/${memberId}`);
-      console.log(res);
-      setFormData(res.data);
-    } catch (error) {
-      console.error(error);
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const previewData = [
-    {
-      key: "Member ID",
-      value: formData?.memberId,
-    },
     {
       key: "Name of Applicant",
       value: formData?.name,
     },
     {
       key: "Parent Name",
-      value: formData?.parentName,
+      value: formData?.parentInfo?.name,
     },
     {
       key: "Phone Number",
       value: formData?.phoneNumber,
+    },
+    {
+      key: "Whatsapp Number",
+      value: formData?.whatsAppNumber,
     },
     {
       key: "Date Of Birth",
@@ -80,6 +90,14 @@ export default function Preview() {
       value: formData?.bankName,
     },
     {
+      key: "Branch Name",
+      value: formData?.branchName,
+    },
+    {
+      key: "Aadhar Number",
+      value: formData?.aadharNumber,
+    },
+    {
       key: "Address",
       value: formData?.address,
     },
@@ -93,15 +111,6 @@ export default function Preview() {
     },
   ];
 
-  const handlePaymentChange = (e) => {
-    if (e.target.checked) {
-      setFormData({
-        ...formData,
-        payment: e.target.value,
-      });
-    }
-  };
-
   const handleStatusChange = (e) => {
     if (e.target.checked) {
       setFormData({
@@ -111,24 +120,86 @@ export default function Preview() {
     }
   };
 
-  const handleSubmit = () => {
-    try {
-      const data = {
-        status: formData.status,
-        paymentMode: formData.paymentMode,
-        payment: formData.payment,
-      };
-      const res = axios.put(
-        `${BaseUrl}/agent/update-status/${formData._id}`,
-        data
+  const navigate = useNavigate();
+
+
+  const base64ToFile = (base64String, fileName) => {
+    const arr = base64String.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], fileName, { type: mime });
+  };
+
+  const handleSubmit = async () => {
+    const data = new FormData();
+
+    // Ensure applicantPhoto is a valid base64 string before converting
+    if (formData.applicantPhoto) {
+      const applicantPhotoFile = await base64ToFile(
+        formData.applicantPhoto,
+        "applicantPhoto.png"
       );
-      alert("updated");
+      console.log(applicantPhotoFile);
+      data.append("applicantPhoto", applicantPhotoFile);
+    } else {
+      throw new Error("Applicant photo is missing or invalid");
+    }
+
+    // Append other form data fields to FormData
+    data.append("aadharNumber", formData.aadharNumber);
+    data.append("accountNumber", formData.accountNumber);
+    data.append("address", formData.address);
+    data.append("applicantPlacementLevel", formData.applicantPlacementLevel);
+    data.append("bankName", formData.bankName);
+    data.append("branchName", formData.branchName);
+    data.append("city", formData.city);
+    data.append("country", formData.country);
+    data.append("dateOfBirth", formData.dateOfBirth);
+    data.append("district", formData.district);
+    data.append("gender", formData.gender);
+    data.append("ifscCode", formData.ifscCode);
+    data.append("joiningFee", formData.joiningFee);
+    data.append("maritalStatus", formData.maritalStatus);
+    data.append("name", formData.name);
+    data.append("nameOfNominee", formData.nameOfNominee);
+    data.append("occupation", formData.occupation);
+    data.append("panNumber", formData.panNumber);
+    data.append("parentName", formData.parentInfo.name);
+    data.append("relation", formData.parentInfo.relation);
+    data.append("phoneNumber", formData.phoneNumber);
+    data.append("placementId", formData.placementId);
+    data.append("placementName", formData.placementName);
+    data.append("placementPlacementLevel", formData.placementPlacementLevel);
+    data.append("relationshipWithNominee", formData.relationshipWithNominee);
+    data.append("sponsorId", formData.sponsorId);
+    data.append("state", formData.state);
+    data.append("whatsAppNumber", formData.whatsAppNumber);
+    data.append("zipCode", formData.zipCode);
+    data.append("status", formData.status);
+
+    try {
+      const res = await axios.post(`${BaseUrl}/agent/register`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log(res);
+      alert("Registration completed");
+
+      setFormData(res.data.data);
+      navigate('/register')
     } catch (error) {
-      console.log(error);
+      console.error("Error during registration:", error);
+      // Handle error, e.g., setSubmitError(error.response.data.error);
     }
   };
 
-  const navigate = useNavigate();
 
   if (loading) {
     return <Spinners />;
@@ -148,7 +219,9 @@ export default function Preview() {
             <h2 className="text-xl font-bold mb-4">Registration Form</h2>
             <button
               className="text-blue-500 hover:text-blue-700 flex items-center justify-center gap-2"
-              onClick={() => navigate(`/register/update/${formData?.memberId}`)}
+              onClick={() =>
+                navigate(`/register/form/terms-and-condition/update`)
+              }
             >
               <CiEdit />
               Edit
@@ -177,16 +250,16 @@ export default function Preview() {
                 </div>
               )}
 
-              <div className="grid grid-cols-2  ">
+              {/* <div className="grid grid-cols-2  ">
                 <label className="font-medium">Applicant Sign</label>
                 {formData?.isHead ? (
                   ""
                 ) : (
                   <label className="font-medium">Sponsor Sign</label>
                 )}
-              </div>
+              </div> */}
 
-              <div className="grid grid-cols-2  ">
+              {/* <div className="grid grid-cols-2  ">
                 <img
                   src={`${ImgUrl}${formData?.applicantSign}`}
                   className="w-[203px] h-[149px]"
@@ -199,12 +272,12 @@ export default function Preview() {
                     className="w-[203px] h-[149px]"
                   />
                 )}
-              </div>
+              </div> */}
 
               {/* {formData?.status === "Un Approved" && ( */}
               {formData?.isPayed ? null : (
                 <>
-                  <div className="flex flex-col">
+                  {/* <div className="flex flex-col">
                     <label className="font-medium mb-2">Mode of Payment</label>
                     <select
                       className="rounded"
@@ -219,8 +292,8 @@ export default function Preview() {
                       <option value="Cash">Cash</option>
                       <option value="UPI">UPI</option>
                     </select>
-                  </div>
-                  <div className="grid grid-cols-2 items-center gap-2">
+                  </div> */}
+                  {/* <div className="grid grid-cols-2 items-center gap-2">
                     <label className="font-medium">Payment Status</label>
                     <div className="flex flex-wrap">
                       <div className="flex items-center me-4">
@@ -258,9 +331,9 @@ export default function Preview() {
                         </label>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="grid grid-cols-2 items-center gap-2">
+                  <div className="grid grid-cols-2 items-center mt-8 gap-2">
                     <label className="font-medium">Status</label>
                     <div className="flex flex-wrap">
                       <div className="flex items-center me-4">
@@ -306,7 +379,7 @@ export default function Preview() {
 
             <div>
               <img
-                src={`${ImgUrl}${formData?.applicantPhoto}`}
+                src={`${formData?.applicantPhoto}`}
                 className="w-[170px] h-[170px]"
               />
             </div>
