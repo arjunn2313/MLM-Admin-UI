@@ -1,50 +1,109 @@
-import {
-  Outlet,
-  RouterProvider,
-  createBrowserRouter,
-  createHashRouter,
-} from "react-router-dom";
+import { Outlet, RouterProvider, createHashRouter } from "react-router-dom";
 import "./App.css";
-import Home from "./Pages/Home/Home";
-import Register from "./Pages/Register/Register";
-import Tree from "./Pages/Tree/Tree";
 import Navbar from "./components/home/NavBar";
 import Menu from "./components/home/Menu";
-import Member from "./Pages/Members/Member";
-import Preview from "./Pages/Register/Preview";
-import RegisterTable from "./Pages/Register/RegisterTable";
-import Downlinemember from "./Pages/Tree/Downline/Downline-member";
-import UpdateMember from "./Pages/Register/MemberEdit";
-import District from "./Pages/Tree/district";
-import Report from "./Pages/reports/Report";
-import SectionTable from "./Pages/Tree/Section";
-import Section from "./Pages/Tree/Section";
-import TreeForm from "./Pages/Tree/Tree-form";
-import TreeTabContainer from "./Pages/Tree/TreeTabContainer";
-import Sponsors from "./Pages/Tree/sponsors/Sponsors";
-import SponsorTree from "./Pages/Tree/sponsors/SponsorTree";
-import MemberDashboard from "./Pages/Members/MemberDashboard";
-import MemberExpense from "./Pages/Members/MemberExpense";
-import Commission from "./Pages/Wallet/Commission/Commission";
-import Referal from "./Pages/Wallet/Referal/Referal";
-import Settings from "./Pages/Wallet/Settings/Settings";
-import CashDebit from "./components/payout";
-import TermsAndCondition from "./Pages/Register/Terms&Condition";
-import MemberPreview from "./Pages/Register/memberPreview";
-import HeadTerms from "./Pages/Tree/HeadTerms";
+import adminRoutes from "./routes/AdminRoutes";
+import AdminLogin from "./Pages/Admin/Auth/AdminLogin";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
+import SignUp, { OTPAuthentication } from "./Pages/User/SignUp/SignUp";
+import SignIn, { PasswordAssistance } from "./Pages/User/Login/Login";
+import userRoutes from "./routes/UserRoutes";
+import UserNavbar from "./components/User/Home/userNavbar";
+import SidebarMenu from "./components/User/Home/userMenu";
 
-// Define Layout component to avoid repetition
+export const BaseUrl = process.env.REACT_APP_BASE_URL;
+
+// const Layout = ({ children }) => (
+//   <div className="">
+//     <Navbar />
+//     <div className="main-container h-full bg-blue-50 ">
+//       <div className="menu w-[21%] bg-white hidden lg:block mt-1">
+//         <Menu />
+//       </div>
+//       <div className="content-container w-full">{children}</div>
+//     </div>
+//   </div>
+// );
+
 const Layout = ({ children }) => (
   <div className="">
     <Navbar />
     <div className="main-container h-full bg-blue-50 ">
-      <div className="menu w-[21%] bg-white hidden lg:block    mt-1">
+      <div className="  bg-white hidden lg:block mt-1">
         <Menu />
       </div>
-      <div className="content-container w-full  ">{children}</div>
+      <div className="content-container w-full">{children}</div>
     </div>
   </div>
 );
+
+const UserLayout = ({ children }) => (
+  <div className="">
+    <UserNavbar />
+    <div className=" bg-blue-50 flex  h-full ">
+      <div className="mt-1 flex h-fit  ">
+        <SidebarMenu />
+      </div>
+      <div className=" w-full">{children}</div>
+    </div>
+  </div>
+);
+
+// const router = createHashRouter([
+//   {
+//     path: "/",
+//     element: (
+//       <Layout>
+//         <Outlet />
+//       </Layout>
+//     ),
+//     children: [
+//       {
+//         element: <ProtectedRoute allowedRoles={["admin"]} />,
+//         children: adminRoutes,
+//       },
+//     ],
+//   },
+//   {
+//     path:"/user",
+//     element: (
+
+//       <UserLayout>
+//         <Outlet />
+//       </UserLayout>
+//     ),
+//     children: [
+//       {
+//         element: <ProtectedRoute allowedRoles={["user"]} />,
+//         children: userRoutes,
+//       },
+//     ],
+//   },
+//   {
+//     path: "/login",
+//     element: <AdminLogin />,
+//   },
+//   {
+//     path: "/signUp",
+//     element: <SignUp />,
+//   },
+//   {
+//     path: "/signIn",
+//     element: <SignIn />,
+//   },
+//   {
+//     path: "/Authentication",
+//     element: <OTPAuthentication />,
+//   },
+//   {
+//     path: "/forgetPassword",
+//     element: <PasswordAssistance />,
+//   },
+//   {
+//     path: "/unauthorized",
+//     element: <div>Unauthorized Access</div>,
+//   },
+// ]);
 
 const router = createHashRouter([
   {
@@ -56,180 +115,50 @@ const router = createHashRouter([
     ),
     children: [
       {
-        path: "",
-        element: <Home />,
-      },
-      {
-        path: "sponsors",
-        element: <Sponsors />,
-      },
-      {
-        path: "downline-member",
-        element: <Downlinemember />,
+        element: <ProtectedRoute allowedRoles={["admin"]} />,
+        children: adminRoutes,
       },
     ],
   },
   {
-    path: "/register",
+    path: "/user",
     element: (
-      <Layout>
-        <Outlet />
-      </Layout>
+      <ProtectedRoute allowedRoles={["user"]}>
+        <UserLayout>
+          <Outlet />
+        </UserLayout>
+      </ProtectedRoute>
     ),
     children: [
       {
-        path: "",
-        element: <RegisterTable />,
-      },
-      {
-        path: "form",
-        element: <Register />,
-      },
-      {
-        path: "form/terms-and-condition",
-        element: <TermsAndCondition />,
-      },
-      {
-        path: "form/terms-and-condition/preview",
-        element: <Preview />,
-      },
-      {
-        path: "form/terms-and-condition/update",
-        element: <UpdateMember />,
-      },
-      {
-        path: "preview/:memberId",
-        element: <MemberPreview />,
-      },
-      {
-        path: "update/:memberId",
-        element: <UpdateMember />,
+        element: <ProtectedRoute allowedRoles={["user"]} />,
+        children: userRoutes,
       },
     ],
   },
   {
-    path: "tree",
-    element: (
-      <Layout>
-        <Outlet />
-      </Layout>
-    ),
-    children: [
-      {
-        path: "district",
-        element: <District />,
-      },
-      {
-        path: "district/:name/:districtId",
-        element: <Section />,
-      },
-      {
-        path: "district/:name/:districtId/new-tree",
-        element: <TreeForm />,
-      },
-      {
-        path: "district/:name/:districtId/new-tree/terms-and-condition",
-        element: <HeadTerms />,
-      },
-      {
-        path: "district/:name/:districtId/tree/:treeId/:headId/:treeName",
-        element: <TreeTabContainer />,
-      },
-    ],
+    path: "/login",
+    element: <AdminLogin />,
   },
   {
-    path: "/incomplete-tree",
-    element: (
-      <Layout>
-        <Outlet />
-      </Layout>
-    ),
-    children: [
-      {
-        path: "",
-        element: <Member />,
-      },
-      {
-        path: ":id/tree-view",
-        element: <MemberDashboard />,
-      },
-    ],
+    path: "/signUp",
+    element: <SignUp />,
   },
   {
-    path: "/completed-tree",
-    element: (
-      <Layout>
-        <Outlet />
-      </Layout>
-    ),
-    children: [
-      {
-        path: "",
-        element: <Member />,
-      },
-      {
-        path: ":id/tree-view",
-        element: <MemberDashboard />,
-      },
-    ],
+    path: "/signIn",
+    element: <SignIn />,
   },
   {
-    path: "/members",
-    element: (
-      <Layout>
-        <Outlet />
-      </Layout>
-    ),
-    children: [
-      {
-        path: "",
-        element: <Member />,
-      },
-      {
-        path: ":id",
-        element: <MemberDashboard />,
-      },
-      {
-        path: ":id/expense",
-        element: <MemberExpense />,
-      },
-    ],
+    path: "/Authentication",
+    element: <OTPAuthentication />,
   },
   {
-    path: "/wallet",
-    element: (
-      <Layout>
-        <Outlet />
-      </Layout>
-    ),
-    children: [
-      {
-        path: "commission",
-        element: <Commission />,
-      },
-      {
-        path: "referal",
-        element: <Referal />,
-      },
-      {
-        path: "settings",
-        element: <Settings />,
-      },
-    ],
+    path: "/forgetPassword",
+    element: <PasswordAssistance />,
   },
   {
-    path: "/reports",
-    element: (
-      <Layout>
-        <Outlet />
-      </Layout>
-    ),
-    children: [
-      {
-        path: "",
-        element: <CashDebit />,
-      },
-    ],
+    path: "/unauthorized",
+    element: <div>Unauthorized Access</div>,
   },
 ]);
 

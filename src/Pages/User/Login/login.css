@@ -1,0 +1,20 @@
+.PhoneInput input {
+      padding-top: 0.5rem;
+padding-bottom: 0.5rem; 
+padding-left: 1rem;
+padding-right: 1rem; 
+border-radius: 0.375rem; 
+width: 100%;
+  }
+
+
+
+.PhoneInput:focus-within {
+    
+    box-shadow: 0 0 0 2px rgb(59, 131, 246); 
+}
+
+/* Style the input element inside PhoneInput when it is focused */
+.PhoneInput input:focus {
+  outline: none; /* Remove default browser outline */
+}

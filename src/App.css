@@ -17,9 +17,9 @@ a {
   content: "";
   position: absolute;
   width: 1.5px;
-  height: 80%;
+  height: 73%;
   left: 12.1%;
-  top: 13%;
+  top: 15%;
   z-index: 0;
   background: rgba(200, 200, 200, 1);
 }
