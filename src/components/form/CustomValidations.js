@@ -87,3 +87,34 @@ export const validateFile = (file) => {
   }
   return "File is required.";
 };
+
+
+export const validateFileUpdate = (file) => {
+  if (file && file.length > 0) {
+    const fileType = file[0].type;
+    if (
+      fileType === "image/svg+xml" ||
+      fileType === "image/png" ||
+      fileType === "image/jpeg" ||
+      fileType === "image/gif"
+    ) {
+      const img = new Image();
+      img.src = URL.createObjectURL(file[0]);
+      return new Promise((resolve) => {
+        img.onload = function () {
+          URL.revokeObjectURL(this.src);
+          if (this.width <= 800 && this.height <= 400) {
+            resolve(true);
+          } else {
+            resolve("Image dimensions should be within 800x400px.");
+          }
+        };
+      });
+    } else {
+      return "Invalid file type.";
+    }
+  }
+  // If file is not provided, return true
+  return true;
+};
+

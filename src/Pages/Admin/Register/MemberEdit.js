@@ -12,6 +12,18 @@ import { BaseUrl } from "../../../App";
 import { Config } from "../../../utils/Auth";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import ExpiryModal from "../../../components/modals/ExpiryModal";
+import {
+  validateAadharNumber,
+  validateAccountNumber,
+  validateFile,
+  validateFileUpdate,
+  validateIFSC,
+  validatePAN,
+  validatePhoneNumber,
+  validateZipCode,
+} from "../../../components/form/CustomValidations";
+import FileInput from "../../../components/form/FileInput";
+import { PhoneNumber } from "../../../components/form/PhoneNumber";
 
 const GenderData = ["Male", "Female", "Other"];
 const MaterialStatus = ["Single", "Married", "Other"];
@@ -28,12 +40,22 @@ export default function UpdateMember() {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    const formData = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+    if (data?.applicantPhoto) {
+      formData.append("applicantPhoto", data.applicantPhoto[0]);
+    }
+
     try {
       const res = await axios.put(
         `${BaseUrl}/api/admin/agent/agent-update/${memberId}`,
-        data,
+        formData,
         Config()
       );
+
       toast.success("Updated", {
         position: "top-right",
         autoClose: 5000,
@@ -45,18 +67,31 @@ export default function UpdateMember() {
         theme: "light",
         transition: Bounce,
       });
+
       setTimeout(() => {
         navigate(-1);
-      },1000);
+      }, 1000);
     } catch (error) {
       console.log(error);
+
       if (error.response && error.response.status === 403) {
         setSectionExpired(true);
+      } else {
+        toast.error("An error occurred. Please try again.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       }
     }
   };
 
-  // Fetch existing member data when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -66,27 +101,29 @@ export default function UpdateMember() {
         );
         const data = response.data;
 
-        console.log(data);
+        // console.log(data);
 
-        // Populate form fields with the fetched data
         setValue("name", data.name);
         setValue("parentInfo", {
           name: data.parentName,
           relation: data.relation,
         });
-        setValue("phoneNumber", data.phoneNumber);
+        setValue("whatsAppNumber", data.whatsAppNumber);
         setValue(
           "dob",
           moment(new Date(data?.dateOfBirth)).format("DD-MM-YYYY")
         );
         setValue("gender", data.gender);
+        setValue("occupation", data.occupation);
         setValue("maritalStatus", data.maritalStatus);
         setValue("panNumber", data.panNumber);
         setValue("accountNumber", data.accountNumber);
+        setValue("branchName", data.branchName);
         setValue("ifscCode", data.ifscCode);
         setValue("bankName", data.bankName);
         setValue("address", data.address);
         setValue("city", data.city);
+        setValue("aadharNumber", data.aadharNumber);
         setValue("district", data.district);
         setValue("state", data.state);
         setValue("country", data.country);
@@ -94,6 +131,7 @@ export default function UpdateMember() {
         setValue("nameOfNominee", data.nameOfNominee);
         setValue("relationshipWithNominee", data.relationshipWithNominee);
         setValue("joiningFee", data.joiningFee);
+        // setValue("applicantPhoto", data.applicantPhoto);
       } catch (error) {
         console.log(error);
         if (error.response && error.response.status === 403) {
@@ -105,57 +143,10 @@ export default function UpdateMember() {
     fetchData();
   }, [memberId, setValue]);
 
-  // useEffect(() => {
-  //   try {
-  //     const storedData = localStorage.getItem("formData");
-
-  //     if (storedData) {
-  //       const data = JSON.parse(storedData);
-
-  //       // Populate form fields with the fetched data
-  //       setValue("name", data.name);
-  //       // setValue("parentInfo", {
-  //       //   name: data.name,
-  //       //   relation: data.relation,
-  //       // });
-  //       setValue("phoneNumber", data.phoneNumber);
-  //       setValue(
-  //         "dob",
-  //         moment(new Date(data?.dateOfBirth)).format("DD-MM-YYYY")
-  //       );
-  //       setValue("gender", data.gender);
-  //       setValue("maritalStatus", data.maritalStatus);
-  //       setValue("panNumber", data.panNumber);
-  //       setValue("accountNumber", data.accountNumber);
-  //       setValue("ifscCode", data.ifscCode);
-  //       setValue("bankName", data.bankName);
-  //       setValue("address", data.address);
-  //       setValue("city", data.city);
-  //       setValue("district", data.district);
-  //       setValue("state", data.state);
-  //       setValue("country", data.country);
-  //       setValue("zipCode", data.zipCode);
-  //       setValue("nomineeName", data.nameOfNominee);
-  //       setValue("relationshipWithNominee", data.relationshipWithNominee);
-  //       setValue("sponsorId", data.sponsorId);
-  //       setValue("joiningFee", data.joiningFee);
-  //       setSponsorDetails({
-  //         name: data.sponsorName,
-  //         sponsorPlacementLevel: data.sponsorPlacementLevel,
-  //       });
-  //       setApplicantPhoto(data.applicantPhoto);
-  //       setApplicantSign(data.applicantSign);
-  //       setSponsorSign(data.sponsorSign);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, [setValue]);
-
   return (
     <>
       {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
-      <ToastContainer/>
+      <ToastContainer />
       <div className="m-3 p-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold mb-6">Update Member</h2>
         <form
@@ -221,6 +212,21 @@ export default function UpdateMember() {
               />
             )}
           />
+
+          <Controller
+            name="occupation"
+            control={control}
+            rules={{ required: "Occupation  is required" }}
+            render={({ field }) => (
+              <Input
+                label="Occupation "
+                placeholder="Enter Occupation "
+                error={errors.occupation}
+                {...field}
+              />
+            )}
+          />
+
           <Controller
             name="gender"
             control={control}
@@ -252,7 +258,10 @@ export default function UpdateMember() {
           <Controller
             name="panNumber"
             control={control}
-            rules={{ required: "PAN number is required" }}
+            rules={{
+              required: "PAN number is required",
+              validate: validatePAN,
+            }}
             render={({ field }) => (
               <Input
                 label="PAN Number"
@@ -265,7 +274,10 @@ export default function UpdateMember() {
           <Controller
             name="accountNumber"
             control={control}
-            rules={{ required: "Account number is required" }}
+            rules={{
+              required: "Account number is required",
+              validate: validateAccountNumber,
+            }}
             render={({ field }) => (
               <Input
                 label="Account Number"
@@ -278,7 +290,10 @@ export default function UpdateMember() {
           <Controller
             name="ifscCode"
             control={control}
-            rules={{ required: "IFSC code is required" }}
+            rules={{
+              required: "IFSC code is required",
+              validate: validateIFSC,
+            }}
             render={({ field }) => (
               <Input
                 label="IFSC Code"
@@ -301,6 +316,38 @@ export default function UpdateMember() {
               />
             )}
           />
+
+          <Controller
+            name="branchName"
+            control={control}
+            rules={{ required: "Branch Name is required" }}
+            render={({ field }) => (
+              <Input
+                label="Branch Name"
+                placeholder="Enter Branch Name"
+                error={errors.branchName}
+                {...field}
+              />
+            )}
+          />
+
+          <Controller
+            name="aadharNumber"
+            control={control}
+            rules={{
+              required: "Aadhar Number is required",
+              validate: validateAadharNumber,
+            }}
+            render={({ field }) => (
+              <Input
+                label="Aadhar Number"
+                placeholder="Enter Aadhar Number"
+                error={errors.aadharNumber}
+                {...field}
+              />
+            )}
+          />
+
           <Controller
             name="address"
             control={control}
@@ -369,7 +416,10 @@ export default function UpdateMember() {
           <Controller
             name="zipCode"
             control={control}
-            rules={{ required: "Zip code is required" }}
+            rules={{
+              required: "Zip code is required",
+              validate: validateZipCode,
+            }}
             render={({ field }) => (
               <Input
                 label="Zip Code"
@@ -405,6 +455,30 @@ export default function UpdateMember() {
               />
             )}
           />
+
+          <Controller
+            name="applicantPhoto"
+            control={control}
+            rules={{ validate: validateFileUpdate }}
+            render={({ field }) => (
+              <FileInput
+                label="Applicant Photo"
+                id="applicantPhoto"
+                error={errors.applicantPhoto}
+                onChange={(e) => field.onChange(e.target.files)}
+                uploaded={field.value && field.value.length > 0}
+              />
+            )}
+          />
+
+          <div className="col-span-1  md:col-span-2 text-center">
+            {Object.keys(errors).length > 0 && (
+              <span className="text-red-500 text-center">
+                {" "}
+                Please correct the errors and fill in all required fields.
+              </span>
+            )}
+          </div>
 
           <div className="flex justify-end col-span-2">
             <button

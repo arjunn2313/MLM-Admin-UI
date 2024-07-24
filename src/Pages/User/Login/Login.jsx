@@ -42,7 +42,7 @@ const SignIn = () => {
         { phoneNumber: value.phoneNumber, password: password.password }
       );
       if (response.data.accessToken) {
-        localStorage.setItem("mlmToken", response.data.accessToken);
+        localStorage.setItem("accessToken", response.data.accessToken);
         navigate("/Dashboard");
         toast.success("Mobile number verified successfully!");
       } else {
@@ -81,7 +81,7 @@ const SignIn = () => {
       );
       if (response.data.accessToken) {
         toast.success("Otp verified successfully!");
-        localStorage.setItem("mlmToken", response.data.accessToken);
+        localStorage.setItem("accessToken", response.data.accessToken);
         navigate("/Dashboard");
         toast.success("Mobile number verified successfully!");
       } else {
@@ -551,7 +551,7 @@ export const PasswordAssistance = () => {
         if (response.data.accessToken) {
           toast.success("Mobile number verified successfully!");
           toast.success("Otp verified successfully!");
-          localStorage.setItem("mlmToken", response.data.accessToken);
+          localStorage.setItem("accessToken", response.data.accessToken);
           navigate("/Dashboard");
         }
       } catch (error) {

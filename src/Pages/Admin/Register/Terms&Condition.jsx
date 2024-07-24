@@ -94,7 +94,7 @@ export default function TermsAndCondition() {
       formData.append("state", data?.state);
       formData.append("country", data?.country);
       formData.append("zipCode", data?.zipCode);
-      formData.append("nameOfNominee", data?.nomineeName);
+      formData.append("nameOfNominee", data?.nameOfNominee);
       formData.append("relationshipWithNominee", data?.relationshipWithNominee);
       formData.append("joiningFee", data?.joiningFee);
       formData.append("status", "Un Approved");
@@ -268,7 +268,7 @@ export default function TermsAndCondition() {
             disabled={!isChecked}
             onClick={() => handlePayment()}
           >
-            Continue
+            Pay Now
           </button>
         </div>
       </div>

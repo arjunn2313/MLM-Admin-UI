@@ -123,15 +123,15 @@ const router = createHashRouter([
   {
     path: "/user",
     element: (
-      <ProtectedRoute allowedRoles={["user"]}>
-        <UserLayout>
+      <UserLayout>
+        <ProtectedRoute allowedRoles={["agent"]}>
           <Outlet />
-        </UserLayout>
-      </ProtectedRoute>
+        </ProtectedRoute>
+      </UserLayout>
     ),
     children: [
       {
-        element: <ProtectedRoute allowedRoles={["user"]} />,
+        element: <ProtectedRoute allowedRoles={["agent"]} />,
         children: userRoutes,
       },
     ],
