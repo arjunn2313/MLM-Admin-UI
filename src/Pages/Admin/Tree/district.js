@@ -5,13 +5,16 @@ import Modal from "../../../components/modals/Modal";
 import Spinners from "../../../components/placeholders/Spinners";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { BaseUrl } from "../../../request/URL";
+import { BaseUrl } from "../../../App";
+import { Config } from "../../../utils/Auth";
+import ExpiryModal from "../../../components/modals/ExpiryModal";
 
 export default function District() {
   const [districts, setDistricts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [sectionExpired, setSectionExpired] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,25 +31,36 @@ export default function District() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${BaseUrl}/district/list`);
+      const response = await axios.get(
+        `${BaseUrl}/api/admin/district/list`,
+        Config()
+      );
       setDistricts(response.data);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
       setLoading(false);
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
     }
   };
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(`${BaseUrl}/district/create`, data);
+      const response = await axios.post(
+        `${BaseUrl}/api/admin/district/create`,
+        data,
+        Config()
+      );
       reset();
       setIsModalOpen(false);
       fetchData();
       setServerError("");
     } catch (error) {
-      console.log("Error submitting data:", error);
       setServerError(error?.response?.data?.message);
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
     }
   };
 
@@ -72,6 +86,7 @@ export default function District() {
 
   return (
     <div className="m-3">
+      {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       <div className="w-full p-4 flex flex-wrap justify-start gap-10">
         {districts.map((district) => (
           <div

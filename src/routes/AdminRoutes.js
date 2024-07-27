@@ -1,7 +1,6 @@
- 
 import Register from "../Pages/Admin/Register/Register";
 import Tree from "../Pages/Admin/Tree/Tree";
- 
+
 import Member from "../Pages/Admin/Members/Member";
 import Preview from "../Pages/Admin/Register/Preview";
 import RegisterTable from "../Pages/Admin/Register/RegisterTable";
@@ -22,9 +21,13 @@ import MemberPreview from "../Pages/Admin/Register/memberPreview";
 import District from "../Pages/Admin/Tree/district";
 import Section from "../Pages/Admin/Tree/Section";
 import TreeForm from "../Pages/Admin/Tree/Tree-form";
-import HeadTerms from "../Pages/Admin/Tree/HeadTerms";
+import HeadTerms from "../Pages/Admin/Tree/TermsAndConditions";
 import TreeTabContainer from "../Pages/Admin/Tree/TreeTabContainer";
 import Home from "../Pages/Admin/Home/Home";
+import Incomplete from "../Pages/Admin/Incomplete/Incomplete";
+import IncompleteTree from "../Pages/Admin/Incomplete/IncompleteTree";
+import Complete from "../Pages/Admin/Completed/Complete";
+import CompleteTree from "../Pages/Admin/Completed/CompleteTree";
 
 const adminRoutes = [
   {
@@ -70,15 +73,15 @@ const adminRoutes = [
   {
     path: "incomplete-tree",
     children: [
-      { path: "", element: <Member /> },
-      { path: ":id/tree-view", element: <MemberDashboard /> },
+      { path: "", element: <Incomplete /> },
+      { path: ":memberId/tree-view", element: <IncompleteTree /> },
     ],
   },
   {
     path: "completed-tree",
     children: [
-      { path: "", element: <Member /> },
-      { path: ":id/tree-view", element: <MemberDashboard /> },
+      { path: "", element: <Complete /> },
+      { path: ":memberId/tree-view", element: <CompleteTree /> },
     ],
   },
   {

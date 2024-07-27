@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IoIosSearch, IoIosEye } from "react-icons/io";
-import moment from "moment"; 
+import moment from "moment";
 import axios from "axios";
 import Spinners from "../../../../components/placeholders/Spinners";
 import Pagination from "../../../../components/Helpers/Pagination";
-import { BaseUrl } from "../../../../request/URL";
+import { BaseUrl } from "../../../../App";
+import { Config } from "../../../../utils/Auth";
+import ExpiryModal from "../../../../components/modals/ExpiryModal";
 
 export default function CompletedList() {
   const [members, setMembers] = useState([]);
@@ -15,7 +17,7 @@ export default function CompletedList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  const [sectionExpired, setSectionExpired] = useState(false);
   const { treeName } = useParams();
 
   useEffect(() => {
@@ -26,13 +28,14 @@ export default function CompletedList() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/agent/completed-members/${treeName}`,
+        `${BaseUrl}/api/admin/section/completed-members/${treeName}`,
         {
           params: {
             search: searchQuery,
             page: currentPage,
-            limit: 10, // Adjust limit as needed
+            limit: 10,
           },
+          ...Config(),
         }
       );
       setMembers(response.data.members);
@@ -41,6 +44,9 @@ export default function CompletedList() {
     } catch (error) {
       setError(error.message || "An error occurred while fetching data.");
       setMembers([]);
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -56,7 +62,8 @@ export default function CompletedList() {
 
   return (
     <div className="h-screen">
-      <div className="p-3 h-[90%] bg-white shadow-md rounded-md">
+        {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
+      <div className="p-5 bg-white shadow-md rounded-md">
         <div className="flex items-center justify-end space-x-5">
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">

@@ -78,7 +78,7 @@ export default function Register() {
       .get(`${BaseUrl}/api/admin/settings`)
       .then((res) => {
         console.log(res);
-        setValue("joiningFee", res.data.referralCommission);
+        setValue("joiningFee", res.data.joiningFee);
       })
       .catch((error) => {
         console.log(error);
@@ -116,71 +116,13 @@ export default function Register() {
       applicantPhoto: applicantPhotoBase64,
     };
 
-    console.log(plainObject);
+ 
 
     await localStorage.setItem("formData", JSON.stringify(plainObject));
     navigate("terms-and-condition");
   };
 
-  // const onSubmit = async (data) => {
-  //   console.log(data);
-  //   const formData = new FormData();
-  //   formData.append("name", data?.name);
-  //   formData.append("parentName", data?.parentInfo?.name);
-  //   formData.append("relation", data?.parentInfo?.relation);
-  //   formData.append("phoneNumber", data?.phoneNumber);
-  //   formData.append("dateOfBirth", data?.dob);
-  //   formData.append("gender", data?.gender);
-  //   formData.append("maritalStatus", data?.maritalStatus);
-  //   formData.append("panNumber", data?.panNumber);
-  //   formData.append("accountNumber", data?.accountNumber);
-  //   formData.append("ifscCode", data?.ifscCode);
-  //   formData.append("bankName", data?.bankName);
-  //   formData.append("address", data?.address);
-  //   formData.append("city", data?.city);
-  //   formData.append("district", data?.district);
-  //   formData.append("state", data?.state);
-  //   formData.append("country", data?.country);
-  //   formData.append("zipCode", data?.zipCode);
-  //   formData.append("nameOfNominee", data?.nomineeName);
-  //   formData.append("relationshipWithNominee", data?.relationshipWithNominee);
-  //   formData.append("sponsorId", data?.sponsorId);
-  //   formData.append("sponsorName", sponsorDetails?.name);
-  //   formData.append(
-  //     "sponsorPlacementLevel",
-  //     sponsorDetails?.applicantPlacementLevel
-  //   );
-  //   formData.append("placementId", data?.placementId);
-  //   formData.append("placementName", placementDetails?.name);
-  //   formData.append(
-  //     "placementPlacementLevel",
-  //     placementDetails?.applicantPlacementLevel
-  //   );
-  //   formData.append("applicantPlacementLevel", data.applicantPlacementLevel);
-  //   formData.append("joiningFee", data?.joiningFee);
-  //   formData.append("applicantPhoto", applicantPhoto);
-  //   formData.append("applicantSign", applicantSign);
-  //   formData.append("sponsorSign", sponsorSign);
-
-  //   const plainObject = {};
-  //   formData.forEach((value, key) => {
-  //     plainObject[key] = value;
-  //   });
-
-  //   try {
-  //     const res = await axios.post(`${BaseUrl}/agent/register`, formData, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-  //     console.log(res);
-  //     alert("Registration completed");
-  //     setShowPreview(true);
-  //     setFormData(res.data.data);
-  //   } catch (error) {
-  //     setSubmitError(error.response.data.error);
-  //   }
-  // };
+   
 
   const handleBack = () => {
     setShowPreview(false);
@@ -877,11 +819,13 @@ export default function Register() {
             </div>
             <div className="col-span-1 md:col-span-2 flex justify-end mt-4 space-x-6">
               <button
-                type="submit"
-                className="px-4 py-2 font-semibold text-red-500  "
+                type="button"
+                className="px-4 py-2 font-semibold text-red-500"
+                onClick={() => window.location.reload()}
               >
                 Discard
               </button>
+
               <button
                 type="submit"
                 className="px-10 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-700"

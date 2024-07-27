@@ -4,33 +4,36 @@ import { PiUserCircleLight } from "react-icons/pi";
 import { CiZoomIn, CiZoomOut } from "react-icons/ci";
 import { TfiReload } from "react-icons/tfi";
 import axios from "axios";
-
 import "./binaryTree.css";
 import CustomPopover from "../Helpers/PopOver";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Spinners from "../placeholders/Spinners";
 import { BaseUrl } from "../../App";
-import ExpiryModal from "../modals/ExpiryModal";
 import { Config } from "../../utils/Auth";
+import ExpiryModal from "../modals/ExpiryModal";
 
-export default function BinaryTree() {
+export default function IncompleteTree({ member }) {
   const treeContainer = useRef(null);
   const [zoom, setZoom] = useState(1);
   const [treeData, setTreeData] = useState(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [popoverContent, setPopoverContent] = useState("");
-  const [loading, setLoading] = useState(true);
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
   const { headId } = useParams();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [sectionExpired, setSectionExpired] = useState(false);
+
+  useEffect(() => {
+    fetchTreeData();
+  }, [member]);
 
   const fetchTreeData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/api/admin/section/tree-node-tree/${headId}`,
+        `${BaseUrl}/api/admin/section/incomplete-tree/${member}`,
         Config()
       );
       setTreeData(response.data);
@@ -43,13 +46,9 @@ export default function BinaryTree() {
     }
   };
 
-  useEffect(() => {
-    fetchTreeData();
-  }, [headId]);
-
   const handleAddChild = async (parentId) => {
-    // alert(parentId);
-    navigate(`/register/form/?sponsorId=${parentId}`);
+    // alert(member);
+    navigate(`/register/form/?sponsorId=${member}`);
   };
 
   const renderNode = ({ nodeDatum }) => {
@@ -60,23 +59,31 @@ export default function BinaryTree() {
 
     const handleMouseOver = (event) => {
       setIsPopoverOpen(true);
-      setPopoverContent(nodeDatum);  
+      setPopoverContent(nodeDatum);
 
- 
+      // Calculate center of the circle
       const circleRect = event.target.getBoundingClientRect();
       const centerX = circleRect.left + circleRect.width / 2;
       const centerY = circleRect.top + circleRect.height / 2;
 
-      
+      // Set popover position
       setPopoverPosition({
         x: centerX - 120,
-        y: centerY + window.scrollY + 30, 
+        y: centerY + window.scrollY + 30, // Adjust as per your design
       });
     };
 
     const handleMouseOut = () => {
       setIsPopoverOpen(false);
     };
+
+    const nodeColor =
+      nodeDatum.name === member
+        ? "rgba(255, 240, 227, 1)"
+        : "rgba(237, 247, 255, 1)";
+
+    const strokeColor =
+      nodeDatum.name === member ? "rgba(170, 91, 23, 1)" : "#007bff";
 
     if (nodeDatum.isAddButton) {
       return (
@@ -118,8 +125,8 @@ export default function BinaryTree() {
       <g>
         <circle
           r={30}
-          fill="#007bff16"
-          stroke="#007bff"
+          fill={nodeColor}
+          stroke={strokeColor}
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
         />
@@ -135,7 +142,7 @@ export default function BinaryTree() {
             onMouseOut={handleMouseOut}
           >
             <PiUserCircleLight
-              style={{ width: "100%", height: "100%", color: "#007bff" }}
+              style={{ width: "100%", height: "100%", color: strokeColor }}
               size={50}
             />
           </div>
@@ -146,7 +153,7 @@ export default function BinaryTree() {
           width={100}
           height={20}
           strokeWidth="0"
-          fill="#007bff"
+          fill={strokeColor}
           rx={5}
           ry={5}
         />
@@ -188,16 +195,16 @@ export default function BinaryTree() {
       M ${source.x},${source.y + labelOffsetY}
       V ${source.y + verticalGap}
       H ${target.x}
-      V ${target.y - 30} 
+      V ${target.y - 30}
     `;
   };
 
   const handleZoomIn = () => {
-    setZoom(prevZoom => prevZoom * 2);
+    setZoom((prevZoom) => prevZoom * 1.5);
   };
 
   const handleZoomOut = () => {
-    setZoom(prevZoom => prevZoom * 0.5);
+    setZoom((prevZoom) => prevZoom * 0.5);
   };
 
   if (loading) {
@@ -209,7 +216,7 @@ export default function BinaryTree() {
   }
 
   return (
-    <div className="   h-full bg-white mt-3 tree-container">
+    <div className="  h-screen    bg-white mt-3 tree-container">
       {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       {isPopoverOpen && (
         <CustomPopover
@@ -219,7 +226,7 @@ export default function BinaryTree() {
         />
       )}
 
-      <div className="flex items-end justify-end p-2 gap-8">
+      <div className=" flex items-end justify-end p-2 gap-8  ">
         <div className="shadow-lg p-3 flex rounded-full">
           <button onClick={handleZoomIn} className="p-1">
             <CiZoomIn size={25} color="#007bff" />

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const Dropdown = ({ items, onSelect, label }) => {
+const Dropdown = ({ items, onSelect, label, disabled }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -18,11 +18,14 @@ const Dropdown = ({ items, onSelect, label }) => {
     <div className="relative z-30 bg-white inline-block text-left">
       <div>
         <button
+          disabled={disabled}
           onClick={toggleDropdown}
-          className="inline-flex justify-center w-full rounded-lg border shadow-sm px-4 py-2 bg-white text-md font-medium   text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0"
+          className="inline-flex justify-center gap-1  w-full rounded-lg border shadow-sm px-4 py-1 bg-white text-md font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-0"
         >
-          {selectedItem ? `${label}: ${selectedItem}` : `${label} : All`}{" "}
-          {/* Display label and selectedItem */}
+          <span className="font-normal">{label} : </span>
+
+          {selectedItem ? selectedItem : " All "}
+
           <svg
             className="-mr-1 ml-2 h-5 w-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +35,7 @@ const Dropdown = ({ items, onSelect, label }) => {
           >
             <path
               fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
               clipRule="evenodd"
             />
           </svg>
@@ -49,7 +52,6 @@ const Dropdown = ({ items, onSelect, label }) => {
             {items.map((item, index) => (
               <a
                 key={index}
-                href="#"
                 onClick={() => handleItemClick(item)}
                 className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
                 role="menuitem"

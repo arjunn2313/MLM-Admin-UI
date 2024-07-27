@@ -49,61 +49,7 @@ const UserLayout = ({ children }) => (
   </div>
 );
 
-// const router = createHashRouter([
-//   {
-//     path: "/",
-//     element: (
-//       <Layout>
-//         <Outlet />
-//       </Layout>
-//     ),
-//     children: [
-//       {
-//         element: <ProtectedRoute allowedRoles={["admin"]} />,
-//         children: adminRoutes,
-//       },
-//     ],
-//   },
-//   {
-//     path:"/user",
-//     element: (
-
-//       <UserLayout>
-//         <Outlet />
-//       </UserLayout>
-//     ),
-//     children: [
-//       {
-//         element: <ProtectedRoute allowedRoles={["user"]} />,
-//         children: userRoutes,
-//       },
-//     ],
-//   },
-//   {
-//     path: "/login",
-//     element: <AdminLogin />,
-//   },
-//   {
-//     path: "/signUp",
-//     element: <SignUp />,
-//   },
-//   {
-//     path: "/signIn",
-//     element: <SignIn />,
-//   },
-//   {
-//     path: "/Authentication",
-//     element: <OTPAuthentication />,
-//   },
-//   {
-//     path: "/forgetPassword",
-//     element: <PasswordAssistance />,
-//   },
-//   {
-//     path: "/unauthorized",
-//     element: <div>Unauthorized Access</div>,
-//   },
-// ]);
+ 
 
 const router = createHashRouter([
   {

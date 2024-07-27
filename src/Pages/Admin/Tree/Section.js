@@ -3,8 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import SectionTable from "../../../components/Tree/SectionTable";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import axios from "axios";
-import { BaseUrl } from "../../../request/URL";
 import Pagination from "../../../components/Helpers/Pagination";
+import { BaseUrl } from "../../../App";
+import { Config } from "../../../utils/Auth";
+import ExpiryModal from "../../../components/modals/ExpiryModal";
 
 export default function Section() {
   const { name, districtId } = useParams();
@@ -15,27 +17,33 @@ export default function Section() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [sectionExpired, setSectionExpired] = useState(false);
 
   const fetchSectionData = async () => {
-    setLoading(true); // Make sure loading state is set before fetching
+    setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/section/list/${districtId}`, {
+        `${BaseUrl}/api/admin/section/list/${districtId}`,
+        {
           params: {
             limit: 10,
             search: searchQuery,
-            page: currentPage
-          }
+            page: currentPage,
+          },
+          ...Config(),
         }
       );
       setSectionData(response.data.sections);
       setTotalPages(response.data.totalPages);
-      setError(null); // Clear any previous errors
+      setError(null);
     } catch (error) {
       setError(error.message || "An error occurred while fetching data.");
-      setSectionData([]); // Clear section data on error
+      setSectionData([]);
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
     } finally {
-      setLoading(false); // Always set loading to false after fetch
+      setLoading(false);
     }
   };
 
@@ -49,11 +57,12 @@ export default function Section() {
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   return (
     <div className="m-3 ">
+      {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       <MdOutlineKeyboardBackspace
         size={30}
         className="my-3 text-gray-600 cursor-pointer"

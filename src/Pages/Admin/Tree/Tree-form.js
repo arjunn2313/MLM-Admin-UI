@@ -1,14 +1,26 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import Input from "../../../components/form/Input";
 import SelectGroup from "../../../components/form/SelectGroup";
 import Date from "../../../components/form/DatePicker";
 import SelectBox from "../../../components/form/SelectBox";
-import { BaseUrl } from "../../../request/URL";
 import axios from "axios";
 import RegPreview from "../../../components/form/RegPreview";
 import { PhoneNumber } from "../../../components/form/PhoneNumber";
+import {
+  validateAadharNumber,
+  validateAccountNumber,
+  validateFile,
+  validateIFSC,
+  validatePAN,
+  validatePhoneNumber,
+  validateZipCode,
+} from "../../../components/form/CustomValidations";
+import FileInput from "../../../components/form/FileInput";
+import { BaseUrl } from "../../../App";
+import { Config } from "../../../utils/Auth";
+import ExpiryModal from "../../../components/modals/ExpiryModal";
 
 const GenderData = ["Male", "Female", "Other"];
 const MaterialStatus = ["Single", "Married", "Other"];
@@ -25,29 +37,21 @@ export default function TreeForm() {
   } = useForm();
 
   const naviagte = useNavigate();
-  const alpicantRef = useRef(null);
-  const apliacntSigRef = useRef(null);
-  const [applicantPhoto, setApplicantPhoto] = useState(null);
-  const [applicantSign, setApplicantSign] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [formData, setFormData] = useState(null);
+  const [sectionExpired, setSectionExpired] = useState(false);
 
-  const handleUploadClick = (type) => {
-    if (type === "applicantPhoto") {
-      alpicantRef.current.click();
-    } else if (type === "applicantSign") {
-      apliacntSigRef.current.click();
-    }
-  };
-
-  const handleFileChange = (type, e) => {
-    const file = e.target.files[0];
-    if (type === "applicantPhoto") {
-      setApplicantPhoto(file);
-    } else if (type === "applicantSign") {
-      setApplicantSign(file);
-    }
-  };
+  useEffect(() => {
+    axios
+      .get(`${BaseUrl}/api/admin/settings`)
+      .then((res) => {
+        console.log(res);
+        setValue("joiningFee", res.data.joiningFee);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const [phoneErrors, setPhoneErrors] = useState(null);
 
@@ -57,65 +61,18 @@ export default function TreeForm() {
     if (phoneNumber && phoneNumber.length >= 10) {
       try {
         const response = await axios.get(
-          `${BaseUrl}/agent/check-phone/${phoneNumber}`
+          `${BaseUrl}/api/admin/agent/check-phone/${phoneNumber}`,
+          Config()
         );
         setPhoneErrors(null);
       } catch (error) {
-        console.log(error);
         setPhoneErrors(error.response.data.error);
+        if (error.response && error.response.status === 403) {
+          setSectionExpired(true);
+        }
       }
     }
   };
-
-  // const onSubmit = async (data) => {
-  //   console.log(data);
-  //   const formData = new FormData();
-  //   formData.append("treeName", data?.treeName);
-  //   formData.append("name", data?.name);
-  //   formData.append("parentName", data?.parentInfo?.name);
-  //   formData.append("relation", data?.parentInfo?.relation);
-  //   formData.append("phoneNumber", data?.phoneNumber);
-  //   formData.append("whatsAppNumber", data?.whatsAppNumber);
-  //   formData.append("occupation", data?.occupation);
-  //   formData.append("dateOfBirth", data?.dob);
-  //   formData.append("gender", data?.gender);
-  //   formData.append("maritalStatus", data?.maritalStatus);
-  //   formData.append("panNumber", data?.panNumber);
-  //   formData.append("accountNumber", data?.accountNumber);
-  //   formData.append("ifscCode", data?.ifscCode);
-  //   formData.append("bankName", data?.bankName);
-  //   formData.append("branchName", data?.branchName);
-  //   formData.append("aadharNumber", data?.aadharNumber);
-  //   formData.append("address", data?.address);
-  //   formData.append("city", data?.city);
-  //   formData.append("district", data?.district);
-  //   formData.append("state", data?.state);
-  //   formData.append("country", data?.country);
-  //   formData.append("zipCode", data?.zipCode);
-  //   formData.append("nameOfNominee", data?.nomineeName);
-  //   formData.append("relationshipWithNominee", data?.relationshipWithNominee);
-  //   formData.append("joiningFee", data?.joiningFee);
-  //   formData.append("applicantPhoto", applicantPhoto);
-  //   // formData.append("applicantSign", applicantSign);
-
-  //   try {
-  //     const res = await axios.post(
-  //       `${BaseUrl}/section/create-head/${districtId}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-  //     console.log(res);
-  //     alert("Registration completed");
-  //     setShowPreview(true);
-  //     setFormData(res.data.head);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -127,22 +84,20 @@ export default function TreeForm() {
   };
 
   const onSubmit = async (data) => {
-    // Convert files to base64 and store them in localStorage
-    const applicantPhotoBase64 = await fileToBase64(applicantPhoto);
+    const applicantPhotoBase64 = await fileToBase64(data.applicantPhoto[0]);
 
     const plainObject = {
       ...data,
       applicantPhoto: applicantPhotoBase64,
     };
 
-    console.log(plainObject);
-
-    await localStorage.setItem("formData", JSON.stringify(plainObject));
+    localStorage.setItem("formData", JSON.stringify(plainObject));
     naviagte("terms-and-condition");
   };
 
   return (
     <>
+      {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       {showPreview ? (
         <RegPreview formData={formData} />
       ) : (
@@ -211,7 +166,10 @@ export default function TreeForm() {
             <Controller
               name="phoneNumber"
               control={control}
-              rules={{ required: "Phone number is required" }}
+              rules={{
+                required: "Phone number is required",
+                validate: validatePhoneNumber,
+              }}
               render={({ field }) => (
                 <div>
                   <PhoneNumber
@@ -235,7 +193,10 @@ export default function TreeForm() {
             <Controller
               name="whatsAppNumber"
               control={control}
-              rules={{ required: "What's App number is required" }}
+              rules={{
+                required: "What's App number is required",
+                validate: validatePhoneNumber,
+              }}
               render={({ field }) => (
                 <PhoneNumber
                   label="Whatsapp Number"
@@ -263,14 +224,14 @@ export default function TreeForm() {
             />
 
             <Controller
-              name="dob"
+              name="dateOfBirth"
               control={control}
               rules={{ required: "Date of birth is required" }}
               render={({ field }) => (
                 <Date
                   label="Date Of Birth"
                   type="date"
-                  error={errors.dob}
+                  error={errors.dateOfBirth}
                   {...field}
                 />
               )}
@@ -304,7 +265,10 @@ export default function TreeForm() {
             <Controller
               name="panNumber"
               control={control}
-              rules={{ required: "PAN number is required" }}
+              rules={{
+                required: "PAN number is required",
+                validate: validatePAN,
+              }}
               render={({ field }) => (
                 <Input
                   label="Pan Number"
@@ -317,7 +281,10 @@ export default function TreeForm() {
             <Controller
               name="accountNumber"
               control={control}
-              rules={{ required: "Account number is required" }}
+              rules={{
+                required: "Account number is required",
+                validate: validateAccountNumber,
+              }}
               render={({ field }) => (
                 <Input
                   label="Account Number"
@@ -330,7 +297,10 @@ export default function TreeForm() {
             <Controller
               name="ifscCode"
               control={control}
-              rules={{ required: "IFSC code is required" }}
+              rules={{
+                required: "IFSC code is required",
+                validate: validateIFSC,
+              }}
               render={({ field }) => (
                 <Input
                   label="IFSC Code"
@@ -371,7 +341,10 @@ export default function TreeForm() {
             <Controller
               name="aadharNumber"
               control={control}
-              rules={{ required: "Aadhar Number is required" }}
+              rules={{
+                required: "Aadhar Number is required",
+                validate: validateAadharNumber,
+              }}
               render={({ field }) => (
                 <Input
                   label="Aadhar Number"
@@ -450,7 +423,10 @@ export default function TreeForm() {
             <Controller
               name="zipCode"
               control={control}
-              rules={{ required: "Zip code is required" }}
+              rules={{
+                required: "Zip code is required",
+                validate: validateZipCode,
+              }}
               render={({ field }) => (
                 <Input
                   label="Zip Code"
@@ -461,14 +437,14 @@ export default function TreeForm() {
               )}
             />
             <Controller
-              name="nomineeName"
+              name="nameOfNominee"
               control={control}
               rules={{ required: "Nominee name is required" }}
               render={({ field }) => (
                 <Input
                   label="Name of the Nominee"
                   placeholder="Enter nominee name"
-                  error={errors.nomineeName}
+                  error={errors.nameOfNominee}
                   {...field}
                 />
               )}
@@ -490,51 +466,41 @@ export default function TreeForm() {
             <Controller
               name="joiningFee"
               control={control}
-              rules={{ required: "Joining fee is required" }}
+              // rules={{ required: "Nominee name is required" }}
               render={({ field }) => (
-                <SelectBox
-                  options={JoiningFee}
+                <Input
                   label="Joining Fee"
+                  // placeholder="Enter nominee name"
                   error={errors.joiningFee}
                   {...field}
+                  disabled={true}
                 />
               )}
             />
 
-            <div>
-              <label className="block mb-3 font-medium">Tree Head Photo</label>
-              <div
-                className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                  applicantPhoto && "border-green-600 text-green-600"
-                }`}
-                onClick={() => handleUploadClick("applicantPhoto")}
-              >
-                {applicantPhoto ? "Uploaded" : "Upload image"}
-              </div>
-              <input
-                type="file"
-                ref={alpicantRef}
-                className="hidden"
-                onChange={(e) => handleFileChange("applicantPhoto", e)}
-              />
+            <Controller
+              name="applicantPhoto"
+              control={control}
+              rules={{ validate: validateFile }}
+              render={({ field }) => (
+                <FileInput
+                  label="Tree Head Photo"
+                  id="applicantPhoto"
+                  error={errors.applicantPhoto}
+                  onChange={(e) => field.onChange(e.target.files)}
+                  uploaded={field.value && field.value.length > 0}
+                />
+              )}
+            />
+
+            <div className="col-span-1  md:col-span-2 text-center">
+              {Object.keys(errors).length > 0 && (
+                <span className="text-red-500 text-center">
+                  {" "}
+                  Please correct the errors and fill in all required fields.
+                </span>
+              )}
             </div>
-            {/* <div>
-              <label className="block mb-3 font-medium">Tree Head Sign</label>
-              <div
-                className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                  applicantSign && "border-green-600 text-green-600"
-                }`}
-                onClick={() => handleUploadClick("applicantSign")}
-              >
-                {applicantSign ? "Uploaded" : "Upload image"}
-              </div>
-              <input
-                type="file"
-                ref={apliacntSigRef}
-                className="hidden"
-                onChange={(e) => handleFileChange("applicantSign", e)}
-              />
-            </div> */}
 
             <div className="col-span-1 md:col-span-2 flex justify-end mt-4 space-x-6">
               <button

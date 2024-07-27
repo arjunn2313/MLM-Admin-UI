@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
 import axios from "axios";
-import { BaseUrl } from "../../../../request/URL";
 import Spinners from "../../../../components/placeholders/Spinners";
 import Pagination from "../../../../components/Helpers/Pagination";
+import { BaseUrl } from "../../../../App";
+import { Config } from "../../../../utils/Auth";
+import ExpiryModal from "../../../../components/modals/ExpiryModal";
 
 export default function Sponsors() {
   const [members, setMembers] = useState([]);
@@ -14,6 +16,7 @@ export default function Sponsors() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [sectionExpired, setSectionExpired] = useState(false);
 
   const navigate = useNavigate();
   const { treeName } = useParams();
@@ -26,13 +29,14 @@ export default function Sponsors() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/agent/sponsor-downline-members/${treeName}`,
+        `${BaseUrl}/api/admin/section/sponsor-downline-members/${treeName}`,
         {
           params: {
             search: searchQuery,
             page: currentPage,
-            limit: 10, // Adjust limit as needed
+            limit: 9,
           },
+          ...Config(),
         }
       );
       setMembers(response.data.members);
@@ -41,6 +45,9 @@ export default function Sponsors() {
     } catch (error) {
       setError(error.message || "An error occurred while fetching data.");
       setMembers([]);
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -48,18 +55,19 @@ export default function Sponsors() {
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
- 
+  console.log(members);
 
   return (
     <div className="h-screen">
-      <div className="p-3 h-[90%] bg-white shadow-md rounded-md">
+      {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
+      <div className="p-5 h-fit bg-white shadow-md rounded-md">
         <div className="flex items-center justify-end space-x-5">
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -89,10 +97,11 @@ export default function Sponsors() {
             />
           </div>
         </div>
+       
 
         {loading ? (
           <div className="flex items-center justify-center h-32">
-          <Spinners />
+            <Spinners />
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -132,7 +141,7 @@ export default function Sponsors() {
                           </td>
                         </>
                       )}
-                      <td className="p-2 text-left">{member?.level}</td>
+                      <td className="p-2 text-left">{member?.placementId}</td>
                       <td
                         className="p-2 text-left cursor-pointer"
                         onClick={() =>
@@ -162,7 +171,7 @@ export default function Sponsors() {
         )}
       </div>
 
-      <div className="py-2">
+      <div className="py-4">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

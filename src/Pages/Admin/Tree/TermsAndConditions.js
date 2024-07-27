@@ -1,33 +1,24 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BaseUrl } from "../../../App";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomModal from "../../../components/modals/Modal";
-import Spinners from "../../../components/placeholders/Spinners";
 import { Config } from "../../../utils/Auth";
+import { BaseUrl } from "../../../App";
+import Spinners from "../../../components/placeholders/Spinners";
+import ExpiryModal from "../../../components/modals/ExpiryModal";
 
-export default function TermsAndCondition() {
+export default function HeadTerms() {
   const [isChecked, setIsChecked] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { districtId, name } = useParams();
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [responseModal, setResponseModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [memberId, setMemberId] = useState(null);
+  const [sectionExpired, setSectionExpired] = useState(false);
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-  };
-
-  const base64ToFile = (base64String, fileName) => {
-    const arr = base64String.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], fileName, { type: mime });
   };
 
   const handlePayment = async (member) => {
@@ -46,11 +37,23 @@ export default function TermsAndCondition() {
   };
 
   const handleCloseReponseModal = () => {
-    navigate("/user/register/form");
+    navigate("/tree/district");
+  };
+
+  const base64ToFile = (base64String, fileName) => {
+    const arr = base64String.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], fileName, { type: mime });
   };
 
   const handleSubmit = async () => {
-    setLoading(true); // Set loading to true when submission starts
+    setLoading(true);
     try {
       const localData = localStorage.getItem("formData");
       if (!localData) {
@@ -65,12 +68,13 @@ export default function TermsAndCondition() {
           data.applicantPhoto,
           "applicantPhoto.png"
         );
-        console.log(applicantPhotoFile);
+
         formData.append("applicantPhoto", applicantPhotoFile);
       } else {
         throw new Error("Applicant photo is missing or invalid");
       }
 
+      formData.append("treeName", data?.treeName);
       formData.append("name", data?.name);
       formData.append("parentName", data?.parentInfo?.name);
       formData.append("relation", data?.parentInfo?.relation);
@@ -96,24 +100,20 @@ export default function TermsAndCondition() {
       formData.append("relationshipWithNominee", data?.relationshipWithNominee);
       formData.append("joiningFee", data?.joiningFee);
       formData.append("status", "Un Approved");
-      formData.append("placementId", data.placementId);
-      formData.append("placementName", data.placementName);
-      formData.append("sponsorId", data.sponsorId);
 
       const res = await axios.post(
-        `${BaseUrl}/api/agent/create`,
+        `${BaseUrl}/api/admin/section/create-head/${districtId}`,
         formData,
         Config()
       );
-
       console.log(res);
-      setMemberId(res.data.data.memberId);
+      setMemberId(res.data.head.memberId);
       setIsModalOpen(false);
       setResponseModal(true);
-
-      // alert("Registration completed");
-      // navigate("/user/register/form");
     } catch (error) {
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
       setIsModalOpen(false);
       setErrorModal(true);
     } finally {
@@ -123,6 +123,7 @@ export default function TermsAndCondition() {
 
   return (
     <>
+      {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       <div className="m-3  p-8 bg-white shadow-md rounded-lg">
         <h2 className="text-2xl font-bold mb-4 text-center">
           Terms & Conditions
@@ -262,7 +263,7 @@ export default function TermsAndCondition() {
             disabled={!isChecked}
             onClick={() => handlePayment()}
           >
-            Continue
+            Pay Now
           </button>
         </div>
       </div>
@@ -311,7 +312,7 @@ export default function TermsAndCondition() {
 
             <button
               className="bg-blue-500 text-white p-2 px-4 rounded mt-4"
-              onClick={() => navigate(`/user/register/preview/${memberId}`)}
+              onClick={() => navigate(`/register/preview/${memberId}`)}
             >
               Show Preview
             </button>
@@ -319,7 +320,7 @@ export default function TermsAndCondition() {
         </div>
       </CustomModal>
 
-      {/* registration faildes */}
+      {/* registration fail */}
       <CustomModal isOpen={errorModal} onClose={handleCloseReponseModal}>
         <div className="flex flex-col items-center">
           <p className="text-red-500 font-semibold text-xl">

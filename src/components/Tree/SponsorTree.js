@@ -6,11 +6,13 @@ import { TfiReload } from "react-icons/tfi";
 import axios from "axios";
 
 import "./binaryTree.css";
-import { BaseUrl } from "../../request/URL";
 import CustomPopover from "../Helpers/PopOver";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinners from "../placeholders/Spinners";
 import { FaPlus } from "react-icons/fa";
+import { BaseUrl } from "../../App";
+import { Config } from "../../utils/Auth";
+import ExpiryModal from "../modals/ExpiryModal";
 
 export default function SponsorTree({ head, member }) {
   const treeContainer = useRef(null);
@@ -21,8 +23,7 @@ export default function SponsorTree({ head, member }) {
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  console.log(head);
+  const [sectionExpired, setSectionExpired] = useState(false);
 
   useEffect(() => {
     fetchTreeData();
@@ -32,11 +33,14 @@ export default function SponsorTree({ head, member }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/agent/tree-node-tree/${head}`
+        `${BaseUrl}/api/admin/section/tree-node-tree/${head}`,
+        Config()
       );
       setTreeData(response.data);
     } catch (error) {
-      console.error("Error fetching tree data:", error);
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -58,7 +62,7 @@ export default function SponsorTree({ head, member }) {
 
     const handleMouseOver = (event) => {
       setIsPopoverOpen(true);
-      setPopoverContent(nodeDatum); // Replace with actual content
+      setPopoverContent(nodeDatum); 
 
       // Calculate center of the circle
       const circleRect = event.target.getBoundingClientRect();
@@ -68,7 +72,7 @@ export default function SponsorTree({ head, member }) {
       // Set popover position
       setPopoverPosition({
         x: centerX - 120,
-        y: centerY + window.scrollY + 30, // Adjust as per your design
+        y: centerY + window.scrollY + 30,  
       });
     };
 
@@ -81,7 +85,7 @@ export default function SponsorTree({ head, member }) {
       navigate(`/register/form/?sponsorId=${parentId}`);
     };
 
-    // Define the custom color based on the head prop
+   
 
     const nodeColor =
       nodeDatum.name === head
@@ -224,6 +228,7 @@ export default function SponsorTree({ head, member }) {
 
   return (
     <div className="h-screen bg-white mt-3 tree-container">
+      {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       {isPopoverOpen && (
         <CustomPopover
           posX={popoverPosition.x}

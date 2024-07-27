@@ -19,6 +19,7 @@ import Date from "../../../components/form/DatePicker";
 import SelectBox from "../../../components/form/SelectBox";
 import { MdVerified } from "react-icons/md";
 import FileInput from "../../../components/form/FileInput";
+import { Config } from "../../../utils/Auth";
 
 const GenderData = ["Male", "Female", "Other"];
 const MaterialStatus = ["Single", "Married", "Other"];
@@ -56,7 +57,7 @@ export default function RegForm() {
       .get(`${BaseUrl}/api/admin/settings`)
       .then((res) => {
         console.log(res);
-        setValue("joiningFee", res.data.referralCommission);
+        setValue("joiningFee", res.data.joiningFee);
       })
       .catch((error) => {
         console.log(error);
@@ -120,7 +121,7 @@ export default function RegForm() {
     if (phoneNumber && phoneNumber.length >= 10) {
       try {
         const response = await axios.get(
-          `${BaseUrl}/api/admin/agent/check-phone/${phoneNumber}`
+          `${BaseUrl}/api/agent/check-phone/${phoneNumber}`,Config()
         );
         setPhoneErrors(null);
       } catch (error) {
@@ -136,7 +137,7 @@ export default function RegForm() {
       setLoadingSponsor(true);
       try {
         const response = await axios.get(
-          `${BaseUrl}/api/admin/agent/sponsor-member/${sponsorId}`
+          `${BaseUrl}/api/agent/sponsor-member/${sponsorId}`,Config()
         );
         setSponsorDetails(response.data);
         // setValue(
@@ -162,7 +163,7 @@ export default function RegForm() {
       setLoadingPlacement(true);
       try {
         const response = await axios.get(
-          `${BaseUrl}/api/admin/agent/placement-member/${placementId}`
+          `${BaseUrl}/api/agent/placement-member/${placementId}`,Config()
         );
         setPlacementDetails(response.data);
         setValue("applicantPlacementLevel", response.data.nextPlacement);

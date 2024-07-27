@@ -9,6 +9,8 @@ export default function SponsorTree() {
     const sponsorId = searchParams.get("sponsorId");
     const headName = searchParams.get("headName");
 
+    console.log(headName);
+
 
   return (
     <div className="h-screen overflow-hidden">

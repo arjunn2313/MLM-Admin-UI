@@ -4,8 +4,9 @@ import Spinners from "../../../components/placeholders/Spinners";
 import { IoIosEye } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BaseUrl } from "../../../request/URL";
 import Dropdown from "../../../components/Helpers/CustomDropDown";
+import { BaseUrl } from "../../../App";
+import { Config } from "../../../utils/Auth";
 
 export default function Member() {
   const [members, setMembers] = useState([]);
@@ -14,31 +15,78 @@ export default function Member() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedTreeName, setSelectedTreeName] = useState("All");
+  const [selectedTreeDistrict, setSelectedTreeDistrict] = useState("All");
+  const [selectedLevel, setSelectedLevel] = useState("All");
+  const [sectionExpired, setSectionExpired] = useState(false);
   const navigate = useNavigate();
 
-  const treeName = "Arjun";
-
-  const categories = ["fdsv", "CSsc", "cssc"];
+  const [treeNames, setTreeNames] = useState([]);
+  const [treeDistricts, setTreeDistricts] = useState([]);
+  const levels = ["All", 0, 1, 2, 3, 4, 5];
 
   useEffect(() => {
+    fetchCategory();
     fetchSectionData();
-  }, [searchQuery, currentPage]);
+  }, [
+    searchQuery,
+    currentPage,
+    selectedTreeDistrict,
+    selectedLevel,
+    selectedTreeName,
+  ]);
 
   const fetchSectionData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseUrl}/agent/list?limit=10`, {
+      const response = await axios.get(`${BaseUrl}/api/admin/agent/list`, {
         params: {
           search: searchQuery,
           page: currentPage,
-          limit: 9, // Adjust limit as needed
+          limit: 9,
+          districtName:
+            selectedTreeDistrict === "All" ? "" : selectedTreeDistrict,
+          sectionName: selectedTreeName === "All" ? "" : selectedTreeName,
+          level: selectedLevel === "All" ? "" : selectedLevel,
         },
+        ...Config(),
       });
       setMembers(response.data.members);
       setTotalPages(response.data.totalPages);
       setError(null);
     } catch (error) {
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
+      setError(error.message || "An error occurred while fetching data.");
+      setMembers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategory = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${BaseUrl}/api/admin/section/incomplete-filter?districtName=${
+          selectedTreeDistrict === "All" ? "" : selectedTreeDistrict
+        }`,
+        Config()
+      );
+
+      if (response?.data?.sectionNames) {
+        setTreeNames(["All", ...response.data.sectionNames]);
+        setSelectedTreeName("All");
+      } else {
+        setSelectedTreeName("All");
+      }
+      setTreeDistricts(["All", ...response.data.districtNames]);
+      setError(null);
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
       setError(error.message || "An error occurred while fetching data.");
       setMembers([]);
     } finally {
@@ -48,48 +96,60 @@ export default function Member() {
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const handleSelect = (item) => {
-    setSelectedCategory(item);
+  const handleSelectTreeName = (item) => {
+    setSelectedTreeName(item);
+    setCurrentPage(1);
   };
 
+  const handleSelectTreeDistrict = (item) => {
+    setSelectedTreeDistrict(item);
+    setCurrentPage(1);
+  };
+
+  const handleSelectLevel = (item) => {
+    setSelectedLevel(item);
+    setCurrentPage(1);
+  };
   return (
     <>
-      <div className="m-3 p-3 h-screen bg-white shadow-md rounded-md">
+      <div className="m-3 p-5 bg-white shadow-md rounded-md">
         {/* filter */}
 
         <div className="flex items-center justify-between space-x-5">
           <div className="flex lg:space-x-8 items-center">
             <span className="text-xl font-medium text-gray-700">
-              Members List
+              Member List
             </span>
 
             <div>
               <Dropdown
-                items={categories}
-                onSelect={handleSelect}
-                label="Tree Name"
-              />
-            </div>
-
-            <div>
-              <Dropdown
-                items={categories}
-                onSelect={handleSelect}
+                items={treeDistricts}
+                onSelect={handleSelectTreeDistrict}
                 label="Tree District"
               />
             </div>
 
+           
+              <div>
+                <Dropdown
+                  disabled={selectedTreeDistrict === "All"}
+                  items={treeNames}
+                  onSelect={handleSelectTreeName}
+                  label="Tree Name"
+                />
+              </div>
+       
             <div>
               <Dropdown
-                items={categories}
-                onSelect={handleSelect}
+                items={levels}
+                onSelect={handleSelectLevel}
                 label="Level"
               />
             </div>

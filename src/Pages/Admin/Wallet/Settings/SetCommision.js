@@ -19,7 +19,7 @@ export default function SetCommission() {
     try {
       const response = await axios.get(`${BaseUrl}/settings`);
       setCommissions(response.data.levelCommissions);
-      setReferralCommission(response.data.referralCommission);
+      setReferralCommission(response.data.joiningFee);
     } catch (err) {
       setError("Failed to fetch commission data.");
     } finally {
@@ -35,7 +35,7 @@ export default function SetCommission() {
     setSaving(true);
     try {
       await axios.post(`${BaseUrl}/settings/update`, {
-        referralCommission: Number(referralCommission),
+        joiningFee: Number(referralCommission),
         levelCommissions: commissions.map((c) => ({
           level: Number(c.level),
           amount: Number(c.amount),

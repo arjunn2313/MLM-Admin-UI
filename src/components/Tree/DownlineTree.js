@@ -4,13 +4,14 @@ import { PiUserCircleLight } from "react-icons/pi";
 import { CiZoomIn, CiZoomOut } from "react-icons/ci";
 import { TfiReload } from "react-icons/tfi";
 import axios from "axios";
-
 import "./binaryTree.css";
-import { BaseUrl } from "../../request/URL";
 import CustomPopover from "../Helpers/PopOver";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Spinners from "../placeholders/Spinners";
+import { BaseUrl } from "../../App";
+import { Config } from "../../utils/Auth";
+import ExpiryModal from "../modals/ExpiryModal";
 
 export default function DownlineTree({ member }) {
   const treeContainer = useRef(null);
@@ -22,6 +23,7 @@ export default function DownlineTree({ member }) {
   const { headId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [sectionExpired, setSectionExpired] = useState(false);
 
   useEffect(() => {
     fetchTreeData();
@@ -31,18 +33,21 @@ export default function DownlineTree({ member }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/agent/tree-node-tree/${member}`
+        `${BaseUrl}/api/admin/section/tree-node-tree/${member}`,
+        Config()
       );
       setTreeData(response.data);
     } catch (error) {
-      console.error("Error fetching tree data:", error);
+      if (error.response && error.response.status === 403) {
+        setSectionExpired(true);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleAddChild = async (parentId) => {
-    alert(parentId);
+    // alert(parentId);
     navigate(`/register/form/?sponsorId=${parentId}`);
   };
 
@@ -187,11 +192,11 @@ export default function DownlineTree({ member }) {
   };
 
   const handleZoomIn = () => {
-    setZoom(zoom * 1.1);
+    setZoom(prevZoom => prevZoom * 1.5);
   };
 
   const handleZoomOut = () => {
-    setZoom(zoom * 0.9);
+    setZoom(prevZoom => prevZoom * 0.5);
   };
 
   if (loading) {
@@ -204,6 +209,7 @@ export default function DownlineTree({ member }) {
 
   return (
     <div className="  h-screen    bg-white mt-3 tree-container">
+       {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       {isPopoverOpen && (
         <CustomPopover
           posX={popoverPosition.x}

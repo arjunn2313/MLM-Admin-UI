@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSearchParams } from "react-router-dom";
 import Tree from "../../../../components/Tree/DownlineTree";
+import IncompleteTree from '../../../../components/Tree/IncompleteTree';
 
 export default function CompletedTree() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,7 +37,7 @@ export default function CompletedTree() {
         </div>
       </div>
 
-      <Tree member={memberId} />
+      <IncompleteTree member={memberId} />
     </div>
   );
 }

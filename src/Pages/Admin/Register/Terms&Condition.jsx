@@ -52,7 +52,7 @@ export default function TermsAndCondition() {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); // Set loading to true when submission starts
+    setLoading(true);  
     try {
       const localData = localStorage.getItem("formData");
       if (!localData) {
@@ -108,7 +108,7 @@ export default function TermsAndCondition() {
         Config()
       );
 
-      console.log(res);
+      
       setMemberId(res.data.data.memberId);
       setIsModalOpen(false);
       setResponseModal(true);
