@@ -28,6 +28,7 @@ import Incomplete from "../Pages/Admin/Incomplete/Incomplete";
 import IncompleteTree from "../Pages/Admin/Incomplete/IncompleteTree";
 import Complete from "../Pages/Admin/Completed/Complete";
 import CompleteTree from "../Pages/Admin/Completed/CompleteTree";
+import LevelTab from "../Pages/Admin/Levels/Container";
 
 const adminRoutes = [
   {
@@ -83,6 +84,10 @@ const adminRoutes = [
       { path: "", element: <Complete /> },
       { path: ":memberId/tree-view", element: <CompleteTree /> },
     ],
+  },
+  {
+    path: "levels-tracking",
+    children: [{ path: "", element: <LevelTab /> }],
   },
   {
     path: "members",
