@@ -28,13 +28,11 @@ export default function Member() {
   useEffect(() => {
     fetchCategory();
     fetchSectionData();
-  }, [
-    searchQuery,
-    currentPage,
-    selectedTreeDistrict,
-    selectedLevel,
-    selectedTreeName,
-  ]);
+  }, [searchQuery, currentPage, selectedTreeDistrict, selectedLevel]);
+
+  useEffect(() => {
+    fetchSectionData();
+  }, [selectedTreeName]);
 
   const fetchSectionData = async () => {
     setLoading(true);
@@ -136,16 +134,15 @@ export default function Member() {
               />
             </div>
 
-           
-              <div>
-                <Dropdown
-                  disabled={selectedTreeDistrict === "All"}
-                  items={treeNames}
-                  onSelect={handleSelectTreeName}
-                  label="Tree Name"
-                />
-              </div>
-       
+            <div>
+              <Dropdown
+                // disabled={selectedTreeDistrict === "All"}
+                items={treeNames}
+                onSelect={handleSelectTreeName}
+                label="Tree Name"
+              />
+            </div>
+
             <div>
               <Dropdown
                 items={levels}

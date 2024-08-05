@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../../../../components/Helpers/Pagination";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BaseUrl } from "../../../../request/URL";
 import Dropdown from "../../../../components/Helpers/CustomDropDown";
 import Spinners from "../../../../components/placeholders/Spinners";
+import { BaseUrl } from "../../../../App";
+import { Config } from "../../../../utils/Auth";
 
 export default function Commission() {
   const [members, setMembers] = useState([]);
@@ -27,12 +28,13 @@ export default function Commission() {
   const fetchSectionData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseUrl}/agent//list?limit=10`, {
+      const response = await axios.get(`${BaseUrl}/api/admin/agent//list?limit=10`, {
         params: {
           search: searchQuery,
           page: currentPage,
           limit: 9, // Adjust limit as needed
         },
+        ...Config()
       });
       setMembers(response.data.members);
       setTotalPages(response.data.totalPages);
@@ -60,7 +62,7 @@ export default function Commission() {
 
   return (
     <>
-      <div className="m-3 p-3 h-screen bg-white shadow-md rounded-md">
+      <div className="m-3 p-3   bg-white  rounded-md">
         {/* filter */}
 
         <div className="flex items-center justify-between space-x-5">

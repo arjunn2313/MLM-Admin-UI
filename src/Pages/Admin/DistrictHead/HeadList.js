@@ -1,14 +1,14 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Pagination from "../../../components/Helpers/Pagination";
 import { useNavigate } from "react-router-dom";
 import { BaseUrl } from "../../../App";
-import axios from "axios";
-import Dropdown from "../../../components/Helpers/CustomDropDown";
-import Spinners from "../../../components/placeholders/Spinners";
 import { Config } from "../../../utils/Auth";
-import ExpiryModal from "../../../components/modals/ExpiryModal";
+import Pagination from "../../../components/Helpers/Pagination";
+import Spinners from "../../../components/placeholders/Spinners";
+import { IoIosEye } from "react-icons/io";
+import Dropdown from "../../../components/Helpers/CustomDropDown";
 
-export default function Incomplete() {
+export default function HeadList() {
   const [members, setMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,10 +20,7 @@ export default function Incomplete() {
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [sectionExpired, setSectionExpired] = useState(false);
   const navigate = useNavigate();
-
-  const [treeNames, setTreeNames] = useState([]);
   const [treeDistricts, setTreeDistricts] = useState([]);
-  const levels = ["All", 0, 1, 2, 3, 4, 5];
 
   useEffect(() => {
     fetchCategory();
@@ -33,17 +30,14 @@ export default function Incomplete() {
     currentPage,
     selectedTreeDistrict,
     selectedLevel,
-   ]);
-
-   useEffect(()=>{
-    fetchSectionData();
-   },[selectedTreeName])
+    selectedTreeName,
+  ]);
 
   const fetchSectionData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${BaseUrl}/api/admin/section/all-incomplete-members`,
+        `${BaseUrl}/api/admin/district-head/list`,
         {
           params: {
             search: searchQuery,
@@ -51,8 +45,6 @@ export default function Incomplete() {
             limit: 9,
             districtName:
               selectedTreeDistrict === "All" ? "" : selectedTreeDistrict,
-            sectionName: selectedTreeName === "All" ? "" : selectedTreeName,
-            level: selectedLevel === "All" ? "" : selectedLevel,
           },
           ...Config(),
         }
@@ -81,14 +73,6 @@ export default function Incomplete() {
         Config()
       );
 
-    
-
-      if (response?.data?.sectionNames) {
-        setTreeNames(["All", ...response.data.sectionNames]);
-        setSelectedTreeName("All");
-      } else {
-        setSelectedTreeName("All");
-      }
       setTreeDistricts(["All", ...response.data.districtNames]);
       setError(null);
     } catch (error) {
@@ -111,30 +95,22 @@ export default function Incomplete() {
     setCurrentPage(page);
   };
 
-  const handleSelectTreeName = (item) => {
-    setSelectedTreeName(item);
-    setCurrentPage(1);
-  };
-
   const handleSelectTreeDistrict = (item) => {
     setSelectedTreeDistrict(item);
     setCurrentPage(1);
   };
 
-  const handleSelectLevel = (item) => {
-    setSelectedLevel(item);
-    setCurrentPage(1);
-  };
+  console.log(selectedTreeDistrict);
 
   return (
     <>
-      {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
-      <div className="m-3 p-5 bg-white shadow-md rounded-md">
+      <div className="m-3 p-5 bg-white   rounded-md">
         {/* filter */}
+
         <div className="flex items-center justify-between space-x-5">
           <div className="flex lg:space-x-8 items-center">
             <span className="text-xl font-medium text-gray-700">
-              Incomplete Trees
+              District Head
             </span>
 
             <div>
@@ -144,26 +120,9 @@ export default function Incomplete() {
                 label="Tree District"
               />
             </div>
-
-            <div>
-              <Dropdown
-                // disabled={selectedTreeDistrict === "All"}
-                items={treeNames}
-                onSelect={handleSelectTreeName}
-                label="Tree Name"
-              />
-            </div>
-
-            <div>
-              <Dropdown
-                items={levels}
-                onSelect={handleSelectLevel}
-                label="Level"
-              />
-            </div>
           </div>
 
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
                 className="w-3 h-3 text-gray-500 dark:text-gray-400"
@@ -189,6 +148,15 @@ export default function Incomplete() {
               value={searchQuery}
               onChange={handleSearch}
             />
+          </div> */}
+
+          <div>
+            <button
+              className="bg-blue-500 text-white px-5 py-1 rounded-md"
+              onClick={() => navigate("registration")}
+            >
+              Register District Head
+            </button>
           </div>
         </div>
 
@@ -202,13 +170,9 @@ export default function Incomplete() {
               <thead>
                 <tr>
                   <th className="p-2 font-bold text-left">Sl. no.</th>
-                  <th className="p-2 font-bold text-left">Tree District</th>
-                  <th className="p-2 font-bold text-left">Tree Name</th>
-                  <th className="p-2 font-bold text-left">Member ID</th>
-                  <th className="p-2 font-bold text-left">Name</th>
-                  <th className="p-2 font-bold text-left">Level</th>
-                  <th className="p-2 font-bold text-left">Placement</th>
-                  <th className="p-2 font-bold text-left">Downline</th>
+                  <th className="p-2 font-bold text-left">District</th>
+                  <th className="p-2 font-bold text-left">Head Name</th>
+                  <th className="p-2 font-bold text-left">Number of Trees</th>
                   <th className="p-2 font-bold text-left">Action</th>
                 </tr>
               </thead>
@@ -221,31 +185,31 @@ export default function Incomplete() {
                     >
                       <td className="p-2 py-4 text-left">{index + 1}</td>
                       <td className="p-2 text-left">{member?.districtName}</td>
-                      <td className="p-2 text-left">{member?.treeName}</td>
-                      <td className="p-2 text-left">{member?.memberId}</td>
                       <td className="p-2 text-left">{member?.name}</td>
-                      <td className="p-2 text-left">{member?.level}</td>
-
-                      {member?.isHead ? (
-                        <td className="p-2 text-left">Head</td>
-                      ) : (
-                        <td className="p-2 text-left">{member?.placementId}</td>
-                      )}
-
                       <td className="p-2 text-left">
-                        {member?.children?.length}
+                        {member?.districtSection?.length}
                       </td>
-                      <td
-                        className="p-2 text-left"
-                        onClick={() =>
-                          navigate(`${member?.memberId}/tree-view`)
-                        }
-                      >
-                        <img
-                          src="assets/Mask group.svg"
-                          alt="tree-icon"
-                          className="bg-orange-50 p-1 rounded-lg"
-                        />
+
+                      <td className="p-2  text-left flex items-center space-x-3 ">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/tree/district/${member.districtName}/${member.districtId._id}`
+                            )
+                          }
+                        >
+                          <img
+                            src="assets/Mask group.svg"
+                            alt="tree-icon"
+                            className="bg-orange-50 p-1 rounded-lg"
+                          />
+                        </button>
+                        <button
+                          className="text-blue-500 cursor-pointer"
+                          onClick={() => navigate(`preview/${member?._id}`)}
+                        >
+                          <IoIosEye />
+                        </button>
                       </td>
                     </tr>
                   ))

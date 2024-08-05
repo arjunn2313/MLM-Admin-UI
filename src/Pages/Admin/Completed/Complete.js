@@ -28,13 +28,11 @@ export default function Complete() {
   useEffect(() => {
     fetchCategory();
     fetchSectionData();
-  }, [
-    searchQuery,
-    currentPage,
-    selectedTreeDistrict,
-    selectedLevel,
-    selectedTreeName,
-  ]);
+  }, [searchQuery, currentPage, selectedTreeDistrict, selectedLevel]);
+
+  useEffect(() => {
+    fetchSectionData();
+  }, [selectedTreeName]);
 
   const fetchSectionData = async () => {
     setLoading(true);
@@ -140,14 +138,14 @@ export default function Complete() {
               />
             </div>
 
-            {/* <div>
+            <div>
                 <Dropdown
-                  disabled={selectedTreeDistrict === "All"}
+                  // disabled={selectedTreeDistrict === "All"}
                   items={treeNames}
                   onSelect={handleSelectTreeName}
                   label="Tree Name"
                 />
-              </div> */}
+              </div>
 
             <div>
               <Dropdown

@@ -23,17 +23,23 @@ import Section from "../Pages/Admin/Tree/Section";
 import TreeForm from "../Pages/Admin/Tree/Tree-form";
 import HeadTerms from "../Pages/Admin/Tree/TermsAndConditions";
 import TreeTabContainer from "../Pages/Admin/Tree/TreeTabContainer";
-import Home from "../Pages/Admin/Home/Home";
 import Incomplete from "../Pages/Admin/Incomplete/Incomplete";
 import IncompleteTree from "../Pages/Admin/Incomplete/IncompleteTree";
 import Complete from "../Pages/Admin/Completed/Complete";
 import CompleteTree from "../Pages/Admin/Completed/CompleteTree";
 import LevelTab from "../Pages/Admin/Levels/Container";
+import HeadList from "../Pages/Admin/DistrictHead/HeadList";
+import DistrictHeadForm from "../Pages/Admin/DistrictHead/Form";
+import IncomeList from "../Pages/Admin/reports/income/IncomeList";
+import ExpenseList from "../Pages/Admin/reports/expense/ExpenseList";
+import HeadPreview from "../Pages/Admin/DistrictHead/HeadPreview";
+import Dashboard from "../Pages/Admin/Dashboard/Dashboard";
+import LogoutModal from "../components/modals/LogoutModal";
 
 const adminRoutes = [
   {
     path: "",
-    element: <Home />,
+    element: <Dashboard />,
   },
   {
     path: "sponsors",
@@ -106,8 +112,20 @@ const adminRoutes = [
     ],
   },
   {
+    path: "district-head",
+    children: [
+      { path: "", element: <HeadList /> },
+      { path: "registration", element: <DistrictHeadForm /> },
+      { path: "preview/:memberId", element: <HeadPreview /> },
+    ],
+  },
+  {
     path: "reports",
-    children: [{ path: "", element: <CashDebit /> }],
+    children: [
+      { path: "", element: <Report /> },
+      { path: "income", element: <IncomeList /> },
+      { path: "expense", element: <ExpenseList /> },
+    ],
   },
 ];
 

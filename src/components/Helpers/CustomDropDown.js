@@ -14,6 +14,8 @@ const Dropdown = ({ items, onSelect, label, disabled }) => {
     onSelect(item);
   };
 
+ 
+
   return (
     <div className="relative z-30 bg-white inline-block text-left">
       <div>
@@ -24,7 +26,7 @@ const Dropdown = ({ items, onSelect, label, disabled }) => {
         >
           <span className="font-normal">{label} : </span>
 
-          {selectedItem ? selectedItem : " All "}
+          {selectedItem !== null ? selectedItem : " All "}
 
           <svg
             className="-mr-1 ml-2 h-5 w-5"

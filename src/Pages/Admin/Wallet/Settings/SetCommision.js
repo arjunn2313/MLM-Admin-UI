@@ -5,7 +5,7 @@ import { BaseUrl } from "../../../../request/URL";
 
 export default function SetCommission() {
   const [commissions, setCommissions] = useState([]);
-  const [referralCommission, setReferralCommission] = useState();
+  const [referralCommission, setReferralCommission] = useState("");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -28,7 +28,10 @@ export default function SetCommission() {
   };
 
   const handleAddValue = () => {
-    setCommissions([...commissions, { level: "", amount: "" }]);
+    setCommissions([
+      ...commissions,
+      { level: "", amount: "", _id: Math.random().toString(36).substr(2, 9) },
+    ]);
   };
 
   const handleSaveChanges = async () => {
@@ -44,7 +47,7 @@ export default function SetCommission() {
       alert("Settings updated successfully");
     } catch (err) {
       setError("Failed to save changes.");
-      console.log(error);
+      console.log(err);
     } finally {
       setSaving(false);
     }
@@ -53,7 +56,7 @@ export default function SetCommission() {
   const handleDelete = async (id) => {
     try {
       setSaving(true);
-      const response = await axios.delete(`${BaseUrl}/settings/delete/${id}`);
+      await axios.delete(`${BaseUrl}/settings/delete/${id}`);
       alert("Commission deleted successfully");
       fetchCommissions();
     } catch (err) {
@@ -72,15 +75,11 @@ export default function SetCommission() {
     return <div>{error}</div>;
   }
 
-  const formatNumberWithCommas = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
   return (
     <div className="rounded h-full">
       <div className="bg-white p-4 rounded">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
-          Commission per person
+          Joining Fee
         </h2>
 
         <input
@@ -95,7 +94,7 @@ export default function SetCommission() {
         </h2>
         {commissions.map((commission, index) => (
           <div
-            key={index}
+            key={commission._id}
             className="flex items-center space-x-5 space-y-2 w-[90%] mb-2"
           >
             <input
@@ -120,7 +119,6 @@ export default function SetCommission() {
               }}
               placeholder="Commission Amount (Rs)"
             />
-
             <button
               className="text-red-500 flex items-center justify-center gap-3"
               onClick={() => handleDelete(commission._id)}

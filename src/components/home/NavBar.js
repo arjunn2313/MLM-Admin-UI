@@ -1,5 +1,6 @@
 import React from "react";
 import Drawer from "./Drawer";
+import { FcBusinessman } from "react-icons/fc";
 
 const Navbar = () => {
   return (
@@ -7,7 +8,7 @@ const Navbar = () => {
       <div className="  mx-auto   py-2 flex justify-between items-center">
         <div className="flex items-center">
           <div className="bg-blue-500 text-white px-10 py-1 text-2xl  text-center rounded-r-full  font-bold">
-            MLM
+           S I P
           </div>
         </div>
 
