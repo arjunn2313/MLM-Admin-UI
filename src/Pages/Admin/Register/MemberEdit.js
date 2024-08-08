@@ -467,6 +467,11 @@ export default function UpdateMember() {
                 error={errors.applicantPhoto}
                 onChange={(e) => field.onChange(e.target.files)}
                 uploaded={field.value && field.value.length > 0}
+                fileName={
+                  field.value && field.value.length > 0
+                    ? field.value[0].name
+                    : ""
+                }
               />
             )}
           />

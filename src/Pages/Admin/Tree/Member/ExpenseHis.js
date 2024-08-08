@@ -62,15 +62,14 @@ export default function ExpenseHis() {
 
   return (
     <div className="h-screen">
-      <Header member={member}/>
+      <Header member={member} />
       {setSectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       <div className="p-3 h-[80%] mt-3  bg-white   border-2 border-blue-400 rounded-md">
         <div className="flex items-center justify-between space-x-5">
           <div className="flex gap-6">
             <h5 className="text-lg text-blue-500 font-semibold">
-              Earnings History
+              Earning History
             </h5>
-           
           </div>
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -105,8 +104,8 @@ export default function ExpenseHis() {
             <thead>
               <tr className="text-lg font-semibold text-gray-700">
                 <th className="py-2">Sl. no.</th>
-                <th className="py-2">Expense Date</th>
-                <th className="py-2">Expense Type</th>
+                <th className="py-2">Earning Date</th>
+                <th className="py-2">Earning Type</th>
                 <th className="py-2">Amount</th>
               </tr>
             </thead>

@@ -112,26 +112,27 @@ export default function DistrictHeadForm() {
         return;
       }
 
-   
-  
       const res = await axios.post(
         `${BaseUrl}/api/admin/district-head/register/`,
-        formData,Config()
+        formData,
+        Config()
       );
-  
+
       alert("Registration successful");
     } catch (error) {
       if (error.response && error.response.status === 403) {
         setSectionExpired(true);
       } else {
-        alert("An error occurred: " + (error.response?.data?.message || error.message));
+        alert(
+          "An error occurred: " +
+            (error.response?.data?.message || error.message)
+        );
       }
       console.log(error);
     } finally {
       // setLoading(false);
     }
   };
-  
 
   return (
     <div className="m-3 p-6 bg-white rounded-lg shadow-md border">
@@ -182,7 +183,7 @@ export default function DistrictHeadForm() {
           rules={{ required: "Parent information is required" }}
           render={({ field }) => (
             <SelectGroup
-              options={["S/O", "D/O","W/O"]}
+              options={["S/O", "D/O", "W/O"]}
               label="Parent Information"
               placeholder="Enter parent name"
               error={errors.parentInfo}
@@ -478,12 +479,16 @@ export default function DistrictHeadForm() {
               label="Applicant Photo"
               id="applicantPhoto"
               error={errors.applicantPhoto}
-              onChange={(e) => field.onChange(e.target.files)}
+              onChange={(e) => {
+                field.onChange(e.target.files);
+              }}
               uploaded={field.value && field.value.length > 0}
+              fileName={
+                field.value && field.value.length > 0 ? field.value[0].name : ""
+              }
             />
           )}
         />
-
         {/* {submitError && <p>{submitError}</p>} */}
         <div className="col-span-1  md:col-span-2 text-center">
           {Object.keys(errors).length > 0 && (
@@ -495,7 +500,7 @@ export default function DistrictHeadForm() {
         </div>
         <div className="col-span-1 md:col-span-2 flex justify-end mt-4 space-x-6">
           <button
-            type="submit"
+            type="button"
             className="px-4 py-2 font-semibold text-red-500  "
             onClick={() => window.location.reload()}
           >
