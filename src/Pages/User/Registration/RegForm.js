@@ -121,7 +121,8 @@ export default function RegForm() {
     if (phoneNumber && phoneNumber.length >= 10) {
       try {
         const response = await axios.get(
-          `${BaseUrl}/api/agent/check-phone/${phoneNumber}`,Config()
+          `${BaseUrl}/api/agent/check-phone/${phoneNumber}`,
+          Config()
         );
         setPhoneErrors(null);
       } catch (error) {
@@ -137,7 +138,8 @@ export default function RegForm() {
       setLoadingSponsor(true);
       try {
         const response = await axios.get(
-          `${BaseUrl}/api/agent/sponsor-member/${sponsorId}`,Config()
+          `${BaseUrl}/api/agent/sponsor-member/${sponsorId}`,
+          Config()
         );
         setSponsorDetails(response.data);
         // setValue(
@@ -163,7 +165,8 @@ export default function RegForm() {
       setLoadingPlacement(true);
       try {
         const response = await axios.get(
-          `${BaseUrl}/api/agent/placement-member/${placementId}`,Config()
+          `${BaseUrl}/api/agent/placement-member/${placementId}`,
+          Config()
         );
         setPlacementDetails(response.data);
         setValue("applicantPlacementLevel", response.data.nextPlacement);
@@ -690,6 +693,7 @@ export default function RegForm() {
           <button
             type="submit"
             className="px-4 py-2 font-semibold text-red-500  "
+            onClick={() => window.location.reload()}
           >
             Discard
           </button>

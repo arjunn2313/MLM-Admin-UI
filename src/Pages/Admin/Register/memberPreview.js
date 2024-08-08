@@ -159,6 +159,9 @@ export default function MemberPreview() {
         theme: "light",
         transition: Bounce,
       });
+      setTimeout(() => {
+        navigate("/register");
+      }, 1000);
     } catch (error) {
       if (error.response.status === 403) {
         setSectionExpired(true);

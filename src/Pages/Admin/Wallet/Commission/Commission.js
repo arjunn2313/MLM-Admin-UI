@@ -28,14 +28,17 @@ export default function Commission() {
   const fetchSectionData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseUrl}/api/admin/agent//list?limit=10`, {
-        params: {
-          search: searchQuery,
-          page: currentPage,
-          limit: 9, // Adjust limit as needed
-        },
-        ...Config()
-      });
+      const response = await axios.get(
+        `${BaseUrl}/api/admin/agent//list?limit=10`,
+        {
+          params: {
+            search: searchQuery,
+            page: currentPage,
+            limit: 9, // Adjust limit as needed
+          },
+          ...Config(),
+        }
+      );
       setMembers(response.data.members);
       setTotalPages(response.data.totalPages);
       setError(null);
@@ -152,7 +155,10 @@ export default function Commission() {
                       key={member._id}
                       className="border-t border-gray-200 text-gray-700"
                     >
-                      <td className="p-2 py-4 text-left">{index + 1}</td>
+                      <td className="p-2 py-4 text-left">
+                        {" "}
+                        {(currentPage - 1) * 10 + index + 1}
+                      </td>
                       <td className="p-2 text-left">{member?.memberId}</td>
                       <td className="p-2 text-left">{member?.name}</td>
                       <td className="p-2 text-left">{member?.level}</td>

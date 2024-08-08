@@ -7,9 +7,7 @@ const HeaderStats = ({ stat, color, icon, count, isLoading }) => {
   };
 
   return (
-    <div
-      className={`bg-white p-6 rounded-lg shadow-md border border-${color}-500`}
-    >
+    <div className={`bg-white p-6 rounded-lg shadow-md border ${color} `}>
       {isLoading ? (
         <Spinners />
       ) : (

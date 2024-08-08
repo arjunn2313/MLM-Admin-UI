@@ -99,8 +99,8 @@ const adminRoutes = [
     path: "members",
     children: [
       { path: "", element: <Member /> },
-      { path: ":id", element: <MemberDashboard /> },
-      { path: ":id/expense", element: <MemberExpense /> },
+      { path: ":memberId", element: <MemberDashboard /> },
+      { path: ":memberId/expense", element: <MemberExpense /> },
     ],
   },
   {

@@ -95,7 +95,7 @@ export default function LevelThree() {
           </div>
         </div>
 
-        <LevelsTable members={members} loading={loading} error={error} />
+        <LevelsTable members={members} loading={loading} error={error} currentPage={currentPage}/>
       </div>
       <div className="py-2">
         <Pagination

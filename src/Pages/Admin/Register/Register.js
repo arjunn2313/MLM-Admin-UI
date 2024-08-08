@@ -35,6 +35,7 @@ export default function Register() {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm();
 
   const navigate = useNavigate();
@@ -56,22 +57,22 @@ export default function Register() {
   };
   const [showPreview, setShowPreview] = useState(false);
   const [formData, setFormData] = useState(null);
-  const [applicantPhoto, setApplicantPhoto] = useState(null);
+  // const [applicantPhoto, setApplicantPhoto] = useState(null);
   const [applicantSign, setApplicantSign] = useState(null);
   const [sponsorSign, setSponsorSign] = useState(null);
   const [submitError, setSubmitError] = useState(null);
   const [sectionExpired, setSectionExpired] = useState(false);
 
-  const handleFileChange = (type, e) => {
-    const file = e.target.files[0];
-    if (type === "applicantPhoto") {
-      setApplicantPhoto(file);
-    } else if (type === "applicantSign") {
-      setApplicantSign(file);
-    } else if (type === "sponsorSign") {
-      setSponsorSign(file);
-    }
-  };
+  // const handleFileChange = (type, e) => {
+  //   const file = e.target.files[0];
+  //   if (type === "applicantPhoto") {
+  //     setApplicantPhoto(file);
+  //   } else if (type === "applicantSign") {
+  //     setApplicantSign(file);
+  //   } else if (type === "sponsorSign") {
+  //     setSponsorSign(file);
+  //   }
+  // };
 
   useEffect(() => {
     axios
@@ -116,13 +117,9 @@ export default function Register() {
       applicantPhoto: applicantPhotoBase64,
     };
 
- 
-
     await localStorage.setItem("formData", JSON.stringify(plainObject));
     navigate("terms-and-condition");
   };
-
-   
 
   const handleBack = () => {
     setShowPreview(false);
@@ -214,6 +211,10 @@ export default function Register() {
     }
   };
 
+  // const applicantPhoto = watch("applicantPhoto");
+  // const fileName =
+  //   applicantPhoto && applicantPhoto[0] ? applicantPhoto[0].name : "";
+
   return (
     <>
       {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
@@ -251,7 +252,7 @@ export default function Register() {
               rules={{ required: "Parent information is required" }}
               render={({ field }) => (
                 <SelectGroup
-                  options={["S/O", "D/O"]}
+                  options={["S/O", "D/O", "W/O"]}
                   label="Parent Information"
                   placeholder="Enter parent name"
                   error={errors.parentInfo}
@@ -259,45 +260,6 @@ export default function Register() {
                 />
               )}
             />
-
-            {/* <Controller
-              name="phoneNumber"
-              control={control}
-              rules={{
-                required: "Phone number is required",
-                minLength: {
-                  value: 10,
-                  message: "Phone number must be 10 digits",
-                },
-                maxLength: {
-                  value: 10,
-                  message: "Phone number must be 10 digits",
-                },
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: "Phone number must contain only digits",
-                },
-              }}
-              render={({ field }) => (
-                <div>
-                  <Input
-                    label="Phone Number"
-                    placeholder="Enter phone number"
-                    error={errors.phoneNumber}
-                    {...field}
-                    onChange={(e) => {
-                      const { value } = e.target;
-                      field.onChange(value);
-                      checkMobileNumber(value);
-                    }}
-                  />
-
-                  {phoneErrors && (
-                    <span className="text-red-500">* {phoneErrors}</span>
-                  )}
-                </div>
-              )}
-            /> */}
 
             <Controller
               name="phoneNumber"
@@ -714,19 +676,7 @@ export default function Register() {
               )}
             />
             <div></div>
-            {/* <Controller
-              name="joiningFee"
-              control={control}
-              rules={{ required: "Joining fee is required" }}
-              render={({ field }) => (
-                <SelectBox
-                  options={JoiningFee}
-                  label="Joining Fee"
-                  error={errors.joiningFee}
-                  {...field}
-                />
-              )}
-            /> */}
+
             <Controller
               name="joiningFee"
               control={control}
@@ -751,63 +701,18 @@ export default function Register() {
                   label="Applicant Photo"
                   id="applicantPhoto"
                   error={errors.applicantPhoto}
-                  onChange={(e) => field.onChange(e.target.files)}
+                  onChange={(e) => {
+                    field.onChange(e.target.files);
+                  }}
                   uploaded={field.value && field.value.length > 0}
+                  fileName={
+                    field.value && field.value.length > 0
+                      ? field.value[0].name
+                      : ""
+                  }
                 />
               )}
             />
-
-            {/* <div>
-              <label className="block mb-3 font-medium">Applicant Photo</label>
-              <div
-                className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                  applicantPhoto && "border-green-600 text-green-600"
-                }`}
-                onClick={() => handleUploadClick("applicantPhoto")}
-              >
-                {applicantPhoto ? "Uploaded" : "Upload image"}
-              </div>
-              <input
-                type="file"
-                ref={alpicantRef}
-                className="hidden"
-                onChange={(e) => handleFileChange("applicantPhoto", e)}
-              />
-            </div> */}
-            {/* <div>
-              <label className="block mb-3 font-medium">Applicant Sign</label>
-              <div
-                className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                  applicantSign && "border-green-600 text-green-600"
-                }`}
-                onClick={() => handleUploadClick("applicantSign")}
-              >
-                {applicantSign ? "Uploaded" : "Upload image"}
-              </div>
-              <input
-                type="file"
-                ref={apliacntSigRef}
-                className="hidden"
-                onChange={(e) => handleFileChange("applicantSign", e)}
-              />
-            </div> */}
-            {/* <div>
-              <label className="block mb-3 font-medium">Sponsor Sign</label>
-              <div
-                className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
-                  sponsorSign && "border-green-600 text-green-600"
-                }`}
-                onClick={() => handleUploadClick("sponsorSign")}
-              >
-                {sponsorSign ? "Uploaded" : "Upload image"}
-              </div>
-              <input
-                type="file"
-                ref={sponserRef}
-                className="hidden"
-                onChange={(e) => handleFileChange("sponsorSign", e)}
-              />
-            </div> */}
 
             <div className="col-span-1  md:col-span-2 text-center">
               {Object.keys(errors).length > 0 && (

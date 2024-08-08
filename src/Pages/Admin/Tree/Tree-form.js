@@ -34,6 +34,7 @@ export default function TreeForm() {
     reset,
     formState: { errors },
     setValue,
+    watch
   } = useForm();
 
   const naviagte = useNavigate();
@@ -95,6 +96,10 @@ export default function TreeForm() {
     naviagte("terms-and-condition");
   };
 
+  const applicantPhoto = watch("applicantPhoto");
+  const fileName =
+    applicantPhoto && applicantPhoto[0] ? applicantPhoto[0].name : "";
+
   return (
     <>
       {sectionExpired && <ExpiryModal isOpen={sectionExpired} />}
@@ -154,7 +159,7 @@ export default function TreeForm() {
               rules={{ required: "Parent information is required" }}
               render={({ field }) => (
                 <SelectGroup
-                  options={["S/O", "D/O"]}
+                  options={["S/O", "D/O", "W/O"]}
                   label="Parent Information"
                   placeholder="Enter parent name"
                   error={errors.parentInfo}
@@ -484,11 +489,12 @@ export default function TreeForm() {
               rules={{ validate: validateFile }}
               render={({ field }) => (
                 <FileInput
-                  label="Tree Head Photo"
+                  label="Applicant Photo"
                   id="applicantPhoto"
                   error={errors.applicantPhoto}
                   onChange={(e) => field.onChange(e.target.files)}
                   uploaded={field.value && field.value.length > 0}
+                  fileName={fileName}
                 />
               )}
             />
@@ -506,7 +512,7 @@ export default function TreeForm() {
               <button
                 type="button"
                 className="px-14 py-2 font-semibold text-red-500  "
-                onClick={() => reset()}
+                onClick={() => window.location.reload()}
               >
                 Discard
               </button>

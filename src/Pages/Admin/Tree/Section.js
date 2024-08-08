@@ -115,7 +115,7 @@ export default function Section() {
 
         {/* Table */}
         <div className="my-5">
-          <SectionTable sectionData={sectionData} loading={loading} />
+          <SectionTable sectionData={sectionData} loading={loading} currentPage={currentPage}/>
         </div>
       </div>
 

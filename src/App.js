@@ -10,20 +10,11 @@ import SignIn, { PasswordAssistance } from "./Pages/User/Login/Login";
 import userRoutes from "./routes/UserRoutes";
 import UserNavbar from "./components/User/Home/userNavbar";
 import SidebarMenu from "./components/User/Home/userMenu";
+import ScrollToTop from "./utils/ScrollToTop";
 
 export const BaseUrl = process.env.REACT_APP_BASE_URL;
 
-// const Layout = ({ children }) => (
-//   <div className="">
-//     <Navbar />
-//     <div className="main-container h-full bg-blue-50 ">
-//       <div className="menu w-[21%] bg-white hidden lg:block mt-1">
-//         <Menu />
-//       </div>
-//       <div className="content-container w-full">{children}</div>
-//     </div>
-//   </div>
-// );
+ 
 
 const Layout = ({ children }) => (
   <div className="">
@@ -56,6 +47,7 @@ const router = createHashRouter([
     path: "/",
     element: (
       <Layout>
+        <ScrollToTop/>
         <Outlet />
       </Layout>
     ),

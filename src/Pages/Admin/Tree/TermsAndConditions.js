@@ -135,9 +135,9 @@ export default function HeadTerms() {
               By using this website, you certify that you have read and reviewed
               this Agreement and that you agree to comply with its terms. If you
               do not want to be bound by the terms of this Agreement, you are
-              advised to stop using the website accordingly. [Company name] only
-              grants use and access of this website, its products, and its
-              services to those who have accepted its terms.
+              advised to stop using the website accordingly. SIP only grants use
+              and access of this website, its products, and its services to
+              those who have accepted its terms.
             </p>
           </section>
 
@@ -156,8 +156,8 @@ export default function HeadTerms() {
               You must be at least 18 (eighteen) years of age before you can use
               this website. By using this website, you warrant that you are at
               least 18 years of age and you may legally adhere to this
-              Agreement. [Company name] assumes no responsibility for
-              liabilities related to age misrepresentation.
+              Agreement. SIP assumes no responsibility for liabilities related
+              to age misrepresentation.
             </p>
           </section>
 
@@ -165,17 +165,16 @@ export default function HeadTerms() {
             <h3 className="font-semibold text-lg">Intellectual property</h3>
             <p className="text-gray-800">
               You agree that all materials, products, and services provided on
-              this website are the property of [company name], its affiliates,
-              directors, officers, employees, agents, suppliers, or licensors
-              including all copyrights, trade secrets, trademarks, patents, and
-              other intellectual property. You also agree that you will not
-              reproduce or redistribute the [company name]'s intellectual
-              property in any way, including electronic, digital, or new
-              trademark registrations. You grant [company name] a royalty-free
-              and non-exclusive license to display, use, copy, transmit, and
-              broadcast the content you upload and publish. For issues regarding
-              intellectual property claims, you should contact the company in
-              order to come to an agreement.
+              this website are the property of SIP, its affiliates, directors,
+              officers, employees, agents, suppliers, or licensors including all
+              copyrights, trade secrets, trademarks, patents, and other
+              intellectual property. You also agree that you will not reproduce
+              or redistribute the SIP's intellectual property in any way,
+              including electronic, digital, or new trademark registrations. You
+              grant SIP a royalty-free and non-exclusive license to display,
+              use, copy, transmit, and broadcast the content you upload and
+              publish. For issues regarding intellectual property claims, you
+              should contact the company in order to come to an agreement.
             </p>
           </section>
 
@@ -201,8 +200,8 @@ export default function HeadTerms() {
               By using this website, you agree that the laws of the [your
               location], without regard to principles of conflict laws, will
               govern these terms and conditions, or any dispute of any sort that
-              might come between [company name] and you, or its business
-              partners and associates.
+              might come between SIP and you, or its business partners and
+              associates.
             </p>
           </section>
 
@@ -219,23 +218,23 @@ export default function HeadTerms() {
           <section className="space-y-3">
             <h3 className="font-semibold text-lg">Indemnification</h3>
             <p className="text-gray-800">
-              You agree to indemnify [company name] and its affiliates and hold
-              [company name] harmless against legal claims and demands that may
-              arise from your use of our services. We reserve the right to
-              select our own legal counsel.
+              You agree to indemnify SIP and its affiliates and hold SIP
+              harmless against legal claims and demands that may arise from your
+              use of our services. We reserve the right to select our own legal
+              counsel.
             </p>
           </section>
 
           <section className="space-y-3">
             <h3 className="font-semibold text-lg">Limitation on liability</h3>
             <p className="text-gray-800">
-              [Company name] is not liable for any damages that may occur to you
-              as a result of your misuse of our website. [Company name] reserves
-              the right to edit, modify, and change this Agreement at any time.
-              We shall let our users know of these changes through electronic
-              mail. This Agreement is an understanding between [company name]
-              and the user, and this supersedes and replaces all prior
-              agreements regarding the use of this website.
+              SIP is not liable for any damages that may occur to you as a
+              result of your misuse of our website. SIP reserves the right to
+              edit, modify, and change this Agreement at any time. We shall let
+              our users know of these changes through electronic mail. This
+              Agreement is an understanding between SIP and the user, and this
+              supersedes and replaces all prior agreements regarding the use of
+              this website.
             </p>
           </section>
         </div>
@@ -277,7 +276,7 @@ export default function HeadTerms() {
           </div>
         ) : (
           <div className="flex flex-col justify-center items-center">
-            <p className="text-blue-500 font-semibold text-xl">MLM</p>
+            <p className="text-blue-500 font-semibold text-xl">SIP</p>
             <img src="assets\qr.png" />
             <span className="text-sm py-2 text-gray-600">
               <span className="text-black font-medium">Note :</span> After

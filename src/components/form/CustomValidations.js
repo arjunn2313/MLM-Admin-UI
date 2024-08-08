@@ -34,18 +34,17 @@ export const validateAadharNumber = (value) => {
 };
 
 export const validateZipCode = (value) => {
-  // Example for US zip code: 5 digits or 5 digits-4 digits
-  const zipCodeRegex = /^(\d{5}(-\d{4})?)$/;
-  // For India PIN code: exactly 6 digits
-  // const zipCodeRegex = /^\d{6}$/;
-  return zipCodeRegex.test(value) || "Invalid zip code format.";
+  const indianZipCodeRegex = /^[1-9][0-9]{5}$/;
+  return indianZipCodeRegex.test(value) || "Invalid zip code format.";
 };
-
 
 export const validatePhoneNumber = (value) => {
   // Remove non-numeric characters (e.g., +, spaces, etc.)
-  const cleanedValue = value.replace(/\D/g, '');
-  return cleanedValue.length <= 12 || "Phone number with country code should be at most 12 digits.";
+  const cleanedValue = value.replace(/\D/g, "");
+  return (
+    cleanedValue.length <= 12 ||
+    "Phone number with country code should be at most 12 digits."
+  );
 };
 
 export const validateDOB = (value) => {
@@ -53,41 +52,82 @@ export const validateDOB = (value) => {
   const birthDate = new Date(value);
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDifference = today.getMonth() - birthDate.getMonth();
-  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < birthDate.getDate())
+  ) {
     age--;
   }
   return age >= 18 || "You must be at least 18 years old to register.";
 };
 
+// export const validateFile = (file) => {
+//   if (file && file.length > 0) {
+//     const fileType = file[0].type;
+//     const validTypes = [
+//       "image/svg+xml",
+//       "image/png",
+//       "image/jpeg",
+//       "image/gif",
+//     ];
+
+//     if (!validTypes.includes(fileType)) {
+//       return "Invalid file type.";
+//     }
+
+//     const img = new Image();
+//     img.src = URL.createObjectURL(file[0]);
+
+//     return new Promise((resolve) => {
+//       img.onload = function () {
+//         URL.revokeObjectURL(this.src);
+//         if (this.width <= 800 && this.height <= 400) {
+//           resolve(true);
+//         } else {
+//           resolve("Image dimensions should be within 800x400px.");
+//         }
+//       };
+//       img.onerror = function () {
+//         resolve("Error loading image. Please try another file.");
+//       };
+//     });
+//   }
+//   return "File is required.";
+// };
 
 export const validateFile = (file) => {
   if (file && file.length > 0) {
     const fileType = file[0].type;
-    if (
-      fileType === "image/svg+xml" ||
-      fileType === "image/png" ||
-      fileType === "image/jpeg" ||
-      fileType === "image/gif"
-    ) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file[0]);
-      return new Promise((resolve) => {
-        img.onload = function () {
-          URL.revokeObjectURL(this.src);
-          if (this.width <= 800 && this.height <= 400) {
-            resolve(true);
-          } else {
-            resolve("Image dimensions should be within 800x400px.");
-          }
-        };
-      });
-    } else {
-      return "Invalid file type.";
+    const validTypes = [
+      "image/svg+xml",
+      "image/png",
+      "image/jpeg",
+      "image/gif",
+    ];
+
+    if (!validTypes.includes(fileType)) {
+      return "Invalid file type. Please upload an image.";
     }
+
+    const img = new Image();
+    img.src = URL.createObjectURL(file[0]);
+
+    return new Promise((resolve) => {
+      img.onload = function () {
+        URL.revokeObjectURL(this.src);
+        if (this.width <= 800 && this.height <= 400) {
+          resolve(true);
+        } else {
+          resolve("Image dimensions should be within 800x400px.");
+        }
+      };
+      img.onerror = function () {
+        resolve("Error loading image. Please try another file.");
+      };
+    });
   }
   return "File is required.";
 };
-
 
 export const validateFileUpdate = (file) => {
   if (file && file.length > 0) {
@@ -117,4 +157,3 @@ export const validateFileUpdate = (file) => {
   // If file is not provided, return true
   return true;
 };
-

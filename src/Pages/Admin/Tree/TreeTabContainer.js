@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import {
   Outlet,
@@ -12,6 +12,7 @@ import DownlineContainer from "./Downline/downlineContainer";
 import MemberContainer from "./Member/MemberContainer";
 import IncompletContainer from "./Incomplete/IncompletContainer";
 import CompletedContainer from "./Completed/CompletedContainer";
+ 
 
 export default function TreeTabContainer() {
   const navigate = useNavigate();
@@ -24,6 +25,10 @@ export default function TreeTabContainer() {
     setSearchParams({ tab });
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selectedTab]);
+    
   const renderContent = () => {
     switch (selectedTab) {
       case "TreeView":

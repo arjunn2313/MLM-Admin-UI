@@ -57,28 +57,28 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <HeaderStats
           isLoading={loading}
-          color="orange"
+          color="border-orange-500"
           stat={stats[0]}
           count={count.totalMembers}
           icon="assets\members.png"
         />
         <HeaderStats
           isLoading={loading}
-          color="purple"
+          color="border-purple-500"
           stat={stats[1]}
           count={count.totalTrees}
           icon="assets\total tree.png"
         />
         <HeaderStats
           isLoading={loading}
-          color="blue"
+          color="border-blue-500"
           stat={stats[2]}
           count={count.totalDistrict}
           icon="assets\dashDistrict.png"
         />
         <HeaderStats
           isLoading={loading}
-          color="violet"
+          color="border-violet-500"
           stat={stats[3]}
           count={count.incomplete}
           icon="assets\DashTree.png"

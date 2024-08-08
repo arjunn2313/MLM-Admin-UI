@@ -33,7 +33,7 @@ export default function Downlinemember() {
           params: {
             search: searchQuery,
             page: currentPage,
-            limit: 9,  
+            limit: 9,
           },
           ...Config(),
         }
@@ -53,7 +53,7 @@ export default function Downlinemember() {
   };
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);  
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
@@ -119,7 +119,10 @@ export default function Downlinemember() {
                       key={member._id}
                       className="border-t border-gray-200 text-gray-700"
                     >
-                      <td className="p-2 py-4 text-left">{index + 1}</td>
+                      <td className="p-2 py-4 text-left">
+                        {" "}
+                        {(currentPage - 1) * 9 + index + 1}
+                      </td>
                       <td className="p-2 text-left">{member?.memberId}</td>
                       <td className="p-2 text-left">{member?.name}</td>
                       <td className="p-2 text-left">{member?.level}</td>

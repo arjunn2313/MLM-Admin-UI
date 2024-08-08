@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Downlinemember from "./Downline-member";
 import DownlineTree from "./DownlineTree";
@@ -6,6 +6,10 @@ import DownlineTree from "./DownlineTree";
 export default function DownlineContainer() {
   const [searchParams, setSearchParams] = useSearchParams();
   const treeView = searchParams.get("tree") || "table";
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [treeView]);
 
   const renderContent = () => {
     switch (treeView) {

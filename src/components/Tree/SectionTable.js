@@ -2,7 +2,7 @@ import React from "react";
 import Spinners from "../placeholders/Spinners";
 import { useNavigate } from "react-router-dom";
 
-export default function SectionTable({ sectionData, loading }) {
+export default function SectionTable({ sectionData, loading, currentPage }) {
   const navigate = useNavigate();
   const tableHeading = [
     "Sl. no.",
@@ -39,7 +39,9 @@ export default function SectionTable({ sectionData, loading }) {
                   key={data._id}
                   className={`border-t border-gray-200 capitalize`}
                 >
-                  <td className="p-2  text-left">{index + 1}</td>
+                  <td className="p-2  text-left">
+                    {(currentPage - 1) * 10 + index + 1}
+                  </td>
                   <td className="p-2  text-left">{data.treeName}</td>
                   <td className="p-2  text-left">{data.headName}</td>
                   <td className="p-2  text-left">{data.levels}</td>

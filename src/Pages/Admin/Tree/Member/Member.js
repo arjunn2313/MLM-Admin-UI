@@ -18,7 +18,7 @@ export default function Member() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [sectionExpired, setSectionExpired] = useState(false);
-  
+
   const { treeName } = useParams();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function Member() {
           params: {
             search: searchQuery,
             page: currentPage,
-            limit: 9,  
+            limit: 9,
           },
           ...Config(),
         }
@@ -120,26 +120,35 @@ export default function Member() {
                       key={member._id}
                       className="border-t border-gray-200 text-gray-700"
                     >
-                      <td className="p-2 py-4 text-left">{index + 1}</td>
+                      <td className="p-2 py-4 text-left">
+                        {" "}
+                        {(currentPage - 1) * 9 + index + 1}
+                      </td>
                       <td className="p-2 text-left">{member?.memberId}</td>
                       <td className="p-2 text-left">{member?.name}</td>
                       <td className="p-2 text-left">{member?.level}</td>
                       {member?.isHead ? (
                         <>
-                        <td className="p-2 text-left">Head</td>
-                        <td className="p-2 text-left">Head</td>
+                          <td className="p-2 text-left">Head</td>
+                          <td className="p-2 text-left">Head</td>
                         </>
                       ) : (
                         <>
-                        <td className="p-2 text-left">{member?.sponsorId}</td>
-                        <td className="p-2 text-left">{member?.placementId}</td>
+                          <td className="p-2 text-left">{member?.sponsorId}</td>
+                          <td className="p-2 text-left">
+                            {member?.placementId}
+                          </td>
                         </>
                       )}
 
                       <td className="p-2  text-left ">
                         <button
                           className="text-blue-500 cursor-pointer"
-                          onClick={() => navigate(`?tab=MemberList&tree=dash`)}
+                          onClick={() =>
+                            navigate(
+                              `?tab=MemberList&tree=dash&memberId=${member.memberId}`
+                            )
+                          }
                         >
                           <IoIosEye />
                         </button>

@@ -1,6 +1,13 @@
 import React, { useRef } from "react";
 
-export default function FileInput({ label, id, error, onChange, uploaded }) {
+export default function FileInput({
+  label,
+  id,
+  error,
+  onChange,
+  uploaded,
+  fileName,
+}) {
   const fileInputRef = useRef(null);
 
   const handleUploadClick = () => {
@@ -8,7 +15,7 @@ export default function FileInput({ label, id, error, onChange, uploaded }) {
   };
 
   return (
-    <div className="mb-4 w-full p-2">
+    <div className="mb-4 w-full ">
       <label className="block mb-3 font-medium">{label}</label>
       <div
         className={`w-full border border-dashed border-blue-500 p-2 rounded-md text-center underline text-blue-500 ${
@@ -16,7 +23,7 @@ export default function FileInput({ label, id, error, onChange, uploaded }) {
         }`}
         onClick={handleUploadClick}
       >
-        {uploaded ? "Uploaded" : "Upload image"}
+        {uploaded ? `${fileName}` : "Upload image"}
       </div>
       <input
         type="file"

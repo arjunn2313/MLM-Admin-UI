@@ -1,14 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const ExpenseHistory = () => {
+const ExpenseHistory = ({member}) => {
   const navigate = useNavigate()
   return (
     <div className="p-4 bg-white rounded-xl border-2 border-blue-400">
       <div className="flex items-center justify-between ">
       <h2 className="font-semibold text-lg mb-4 text-blue-500">Expense History</h2>
       <button className="border-2 border-blue-400 p-1 px-3 rounded-lg text-md text-blue-500"
-       onClick={()=>navigate(`?tab=MemberList&tree=history`)}
+       onClick={()=>navigate(`?tab=MemberList&tree=history&memberId=${member?.memberId}`)}
       >View All</button>
       </div>
       <table className="w-full text-left">

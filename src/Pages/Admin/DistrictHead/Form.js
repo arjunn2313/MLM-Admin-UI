@@ -182,7 +182,7 @@ export default function DistrictHeadForm() {
           rules={{ required: "Parent information is required" }}
           render={({ field }) => (
             <SelectGroup
-              options={["S/O", "D/O"]}
+              options={["S/O", "D/O","W/O"]}
               label="Parent Information"
               placeholder="Enter parent name"
               error={errors.parentInfo}
@@ -497,6 +497,7 @@ export default function DistrictHeadForm() {
           <button
             type="submit"
             className="px-4 py-2 font-semibold text-red-500  "
+            onClick={() => window.location.reload()}
           >
             Discard
           </button>

@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../../components/Tree/memberdash/header";
 import Pagination from "../../../../components/Helpers/Pagination";
+import axios from "axios";
+import { BaseUrl } from "../../../../App";
+import { Config } from "../../../../utils/Auth";
+import Spinners from "../../../../components/placeholders/Spinners";
+import { useSearchParams } from "react-router-dom";
+import ExpiryModal from "../../../../components/modals/ExpiryModal";
 
 export default function ExpenseHis() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -8,6 +14,42 @@ export default function ExpenseHis() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [member, setMember] = useState();
+  const [searchParams] = useSearchParams();
+  const memberId = searchParams.get("memberId");
+  const [sectionExpired, setSectionExpired] = useState(false);
+
+  useEffect(() => {
+    fetchAgentData();
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const fetchAgentData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axios.get(
+        `${BaseUrl}/api/admin/agent/agent-preview/${memberId}`,
+        Config()
+      );
+      setMember(res.data);
+    } catch (error) {
+      setError(error);
+      if (error.response.status === 403) {
+        setSectionExpired(true);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <Spinners />;
+  }
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -20,8 +62,8 @@ export default function ExpenseHis() {
 
   return (
     <div className="h-screen">
-      <Header />
-
+      <Header member={member}/>
+      {setSectionExpired && <ExpiryModal isOpen={sectionExpired} />}
       <div className="p-3 h-[80%] mt-3  bg-white   border-2 border-blue-400 rounded-md">
         <div className="flex items-center justify-between space-x-5">
           <div className="flex gap-6">

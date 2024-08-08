@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Sponsors from "./Sponsors";
 import SponsorTree from "./SponsorTree";
@@ -6,6 +6,10 @@ import SponsorTree from "./SponsorTree";
 export default function SponsorContainer() {
   const [searchParams, setSearchParams] = useSearchParams();
   const treeView = searchParams.get("tree") || "table";
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [treeView]);
 
   const handleTabChange = (tab) => {
     setSearchParams({ tab });

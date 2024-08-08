@@ -207,7 +207,7 @@ export default function Member() {
                       key={member._id}
                       className="border-t border-gray-200 text-gray-700"
                     >
-                      <td className="p-2 py-4 text-left">{index + 1}</td>
+                      <td className="p-2 py-4 text-left">  {(currentPage - 1) * 10 + index + 1}</td>
                       <td className="p-2 text-left">{member?.memberId}</td>
                       <td className="p-2 text-left">{member?.name}</td>
                       <td className="p-2 text-left">{member?.level}</td>
